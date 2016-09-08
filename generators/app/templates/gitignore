@@ -1,0 +1,11 @@
+.DS_Store
+node_modules
+public
+.tmp
+.idea
+.log
+dist
+/<%= srcDir %>/config/local.env.js
+npm-debug.log
+coverage
+cassettes
