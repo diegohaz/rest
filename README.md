@@ -1,4 +1,4 @@
-# generator-rest [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
+# generator-rest [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage percentage][coveralls-image]][coveralls-url] [![Dependency Status][daviddm-image]][daviddm-url]
 > RESTful API generator using NodeJS, Express and Mongoose
 
 ## Features
@@ -60,6 +60,15 @@ You can customize the `src` and `api` directories.
 | - index.js
 | - routes.js
 ```
+
+## TODO
+
+- Support optional phone authentication
+- Support optional email confirmation process
+- Support Google, Twitter, GitHub and other social login methods
+
+PRs are welcome.
+
 ## License
 
 MIT © [Diego Haz](https://github.com/diegohaz)
