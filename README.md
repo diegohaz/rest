@@ -38,27 +38,27 @@ yo rest
 You can customize the `src` and `api` directories.
 
 ```
-- src/
-| - api/
-| | - some-endpoint/
-| | | - index.js
-| | | - index.test.js
-| | | - some-endpoint.controller.js
-| | | - some-endpoint.model.js
-| | | - some-endpoint.model.test.js
-| | - another-endpoint/
-| - config/
-| | - index.js
-| | - express.js
-| | - mongoose.js
-| - services/
-| | - facebook/
-| | - passport/
-| | - sendgrid/
-| | - your-service/
-| - app.js
-| - index.js
-| - routes.js
+src/
+├─ api/
+│  ├─ user/
+│  │  ├─ user.controller.js
+│  │  ├─ user.model.js
+│  │  ├─ user.model.test.js
+│  │  ├─ user.router.js
+│  │  └─ user.router.test.js
+│  └─ another-endpoint/
+├─ config/
+│  ├─ index.js
+│  ├─ express.js
+│  └─ mongoose.js
+├─ services/
+│  ├─ facebook/
+│  ├─ passport/
+│  ├─ sendgrid/
+│  └─ your-service/
+├─ app.js
+├─ index.js
+└─ routes.js
 ```
 
 ## TODO

@@ -1,0 +1,6 @@
+{
+  "name": "user",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./user.router.js"
+}
