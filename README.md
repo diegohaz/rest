@@ -9,10 +9,10 @@
  - **User registration API** - Using [passport](http://passportjs.org/) (optional)
  - **Social login API** - Currently only Facebook (optional)
  - **Password reset API** - Sending emails with [SendGrid API](https://sendgrid.com/docs/API_Reference/index.html) (optional)
- - **Listing query strings** - `q`, `page`, `limit`, `fields` etc. already provided by [querymen](https://github.com/diegohaz/ququerymen)
- - **Query string validator** - Using [querymen](https://github.com/diegohaz/ququerymen)
- - **Request body validator** - Using [bodymen](https://github.com/diegohaz/qubodymen)
- - **Standard error responses** - Using [querymen](https://github.com/diegohaz/ququerymen) and [bodymen](https://github.com/diegohaz/qubodymen) error handlers
+ - **Listing query strings** - `q`, `page`, `limit`, `fields` etc. already provided by [querymen](https://github.com/diegohaz/querymen)
+ - **Query string validator** - Using [querymen](https://github.com/diegohaz/querymen)
+ - **Request body validator** - Using [bodymen](https://github.com/diegohaz/bodymen)
+ - **Standard error responses** - Using [querymen](https://github.com/diegohaz/querymen) and [bodymen](https://github.com/diegohaz/bodymen) error handlers
  - **Unit and integration tests** - Using [AVA](https://github.com/avajs/ava)
  - **Continuous integration support** - Using [Travis CI](https://travis-ci.org/)
  - **API docs generator** - Using [apidoc](http://apidocjs.com/)
