@@ -1,40 +1,40 @@
 import _ from 'lodash'
-import { success, error, notFound } from '../../services/response/'
-import User from './user.model'
+import { success, notFound } from '../../services/response/'
+import { User } from '.'
 
-export const index = ({ querymen: { query, select, cursor } }, res) =>
+export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   User.find(query, select, cursor)
     .then((users) => users.map((user) => user.view()))
     .then(success(res))
-    .catch(error(res))
+    .catch(next)
 
-export const show = ({ params }, res) =>
+export const show = ({ params }, res, next) =>
   User.findById(params.id)
     .then(notFound(res))
     .then((user) => user ? user.view() : null)
     .then(success(res))
-    .catch(error(res))
+    .catch(next)
 
 export const showMe = ({ user }, res) =>
   res.json(user.view(true))
 
-export const create = ({ bodymen: { body } }, res) =>
+export const create = ({ bodymen: { body } }, res, next) =>
   User.create(body)
     .then((user) => user.view(true))
     .then(success(res, 201))
     .catch((err) => {
       if (err.name === 'MongoError' && err.code === 11000) {
-        res.status(400).json({
+        res.status(409).json({
           valid: false,
           param: 'email',
-          message: 'Email already registered'
+          message: 'email already registered'
         })
       } else {
-        error(res)(err)
+        next(err)
       }
     })
 
-export const update = ({ bodymen: { body }, params, user }, res) =>
+export const update = ({ bodymen: { body }, params, user }, res, next) =>
   User.findById(params.id === 'me' ? user.id : params.id)
     .then(notFound(res))
     .then((result) => {
@@ -53,10 +53,10 @@ export const update = ({ bodymen: { body }, params, user }, res) =>
     .then((user) => user ? _.merge(user, body).save() : null)
     .then((user) => user ? user.view(true) : null)
     .then(success(res))
-    .catch(error(res))
+    .catch(next)
 
-<%_ if (emailSignup) {_%>
-export const updatePassword = ({ bodymen: { body }, params, user }, res) =>
+<%_ if (authMethods.indexOf('email') !== -1) { _%>
+export const updatePassword = ({ bodymen: { body }, params, user }, res, next) =>
   User.findById(params.id === 'me' ? user.id : params.id)
     .then(notFound(res))
     .then((result) => {
@@ -75,12 +75,12 @@ export const updatePassword = ({ bodymen: { body }, params, user }, res) =>
     .then((user) => user ? user.set({ password: body.password }).save() : null)
     .then((user) => user ? user.view(true) : null)
     .then(success(res))
-    .catch(error(res))
+    .catch(next)
 
 <%_ } _%>
-export const destroy = ({ params }, res) =>
+export const destroy = ({ params }, res, next) =>
   User.findById(params.id)
     .then(notFound(res))
     .then((user) => user ? user.remove() : null)
     .then(success(res, 204))
-    .catch(error(res))
+    .catch(next)

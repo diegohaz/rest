@@ -1,12 +1,21 @@
+<%_ var emailSignup = authMethods.indexOf('email') !== -1 _%>
+<%_ var facebookLogin = authMethods.indexOf('facebook') !== -1 _%>
 import crypto from 'crypto'
+<%_ if (emailSignup) { _%>
 import bcrypt from 'bcrypt'
+<%_ if (facebookLogin) { _%>
 import randtoken from 'rand-token'
+<%_ } _%>
+<%_ } _%>
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
+<%_ if (emailSignup) { _%>
 import { env } from '../../config'
-import Session from '../session/session.model'
+<%_ } _%>
 
+<%_ if (emailSignup) { _%>
 const compare = require('bluebird').promisify(bcrypt.compare)
+<%_ } _%>
 const roles = ['user', 'admin']
 
 const UserSchema = new Schema({
@@ -16,26 +25,25 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
     trim: true,
-    lowercase: true,
-    index: true
+    lowercase: true
   },
-<%_ if (emailSignup) {_%>
+  <%_ if (emailSignup) { _%>
   password: {
     type: String,
     required: true,
     minlength: 6
   },
-<%_ } _%>
+  <%_ } _%>
   name: {
     type: String,
     index: true,
     trim: true
   },
-<%_ if (facebookLogin) { _%>
+  <%_ if (facebookLogin) { _%>
   facebook: {
     id: String
   },
-<%_ } _%>
+  <%_ } _%>
   role: {
     type: String,
     enum: roles,
@@ -62,13 +70,15 @@ UserSchema.path('email').set(function (email) {
   return email
 })
 
-<%_ if (emailSignup) {_%>
+<%_ if (emailSignup) { _%>
 UserSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next()
 
-  let rounds = env === 'test' ? 1 : 9
+  /* istanbul ignore next */
+  const rounds = env === 'test' ? 1 : 9
 
   bcrypt.hash(this.password, rounds, (err, hash) => {
+    /* istanbul ignore next */
     if (err) return next(err)
     this.password = hash
     next()
@@ -76,10 +86,6 @@ UserSchema.pre('save', function (next) {
 })
 
 <%_ } _%>
-UserSchema.pre('remove', function (next) {
-  Session.remove({ user: this }).then(next).catch(next)
-})
-
 UserSchema.methods = {
   view (full) {
     let view = {}
@@ -92,34 +98,41 @@ UserSchema.methods = {
     fields.forEach((field) => { view[field] = this[field] })
 
     return view
-  }<%_ if (emailSignup) {_%>,
+  }<%_ if (emailSignup) { _%>,
 
   authenticate (password) {
     return compare(password, this.password).then((valid) => valid ? this : false)
   }
-<%_ } _%>
+  <%_ } _%>
 }
 
 UserSchema.statics = {
   roles<%_ if (facebookLogin) { _%>,
 
   createFromFacebook ({ id, name, email, picture }) {
-    const User = mongoose.model('User')
-
-    return User.findOne({ email }).then((user) => {
+    return this.findOne({ $or: [{ 'facebook.id': id }, { email }] }).then((user) => {
       if (user) {
         user.facebook.id = id
         user.name = name
-        user.email = email
         user.picture = picture.data.url
         return user.save()
       } else {
+        <%_ if (emailSignup) { _%>
         const password = randtoken.generate(16)
-        return User.create({ name, email, password, facebook: { id }, picture: picture.data.url })
+        <%_ } _%>
+        return this.create({
+          name,
+          email,
+          <%_ if (emailSignup) { _%>
+          password,
+          <%_ } _%>
+          facebook: { id },
+          picture: picture && picture.data && picture.data.url
+        })
       }
     })
   }
-<%_ } _%>
+  <%_ } _%>
 }
 
 UserSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })

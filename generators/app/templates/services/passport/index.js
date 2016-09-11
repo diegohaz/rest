@@ -1,17 +1,64 @@
 import passport from 'passport'
+<%_ if (authMethods.indexOf('email') !== -1) { _%>
+import { Schema } from 'bodymen'
 import { BasicStrategy } from 'passport-http'
+<%_ } _%>
 import { Strategy as BearerStrategy } from 'passport-http-bearer'
-<%_ if (facebookLogin) { _%>
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
+import { jwtSecret, masterKey } from '../../config'
+<%_ if (authMethods.indexOf('facebook') !== -1) { _%>
 import { getMe } from '../facebook'
 <%_ } _%>
-import User from '../../<%= apiDir %>/user/user.model'
-import Session from '../../<%= apiDir %>/session/session.model'
+import User<% if (authMethods.indexOf('email') !== -1) { %>, { schema }<% } %> from '../../<%= apiDir %>/user/user.model'
 
-<%_ if (emailSignup) {_%>
-passport.use(new BasicStrategy((email, password, done) => {
-  User.findOne({ email: email.toLowerCase() }).then((user) => {
-    if (!user) return done(true)
+<%_ if (authMethods.indexOf('email') !== -1) { _%>
+export const basic = () => (req, res, next) =>
+  passport.authenticate('basic', { session: false }, (err, user, info) => {
+    if (err && err.param) {
+      return res.status(400).json(err)
+    } else if (err || !user) {
+      return res.status(401).end()
+    }
+    req.logIn(user, { session: false }, (err) => {
+      if (err) return res.status(401).end()
+      next()
+    })
+  })(req, res, next)
 
+<%_ } _%>
+<%_ if (authMethods.indexOf('facebook') !== -1) { _%>
+export const facebook = () =>
+  passport.authenticate('facebook', { session: false })
+
+<%_ } _%>
+export const master = () =>
+  passport.authenticate('master', { session: false })
+
+export const session = ({ required, roles = User.roles } = {}) => (req, res, next) =>
+  passport.authenticate('session', { session: false }, (err, user, info) => {
+    // console.log(err, user, info)
+    if (err || (required && !user) || (required && !~roles.indexOf(user.role))) {
+      return res.status(401).end()
+    }
+    req.logIn(user, { session: false }, (err) => {
+      if (err) return res.status(401).end()
+      next()
+    })
+  })(req, res, next)
+
+<%_ if (authMethods.indexOf('email') !== -1) { _%>
+passport.use('basic', new BasicStrategy((email, password, done) => {
+  const userSchema = new Schema({ email: schema.tree.email, password: schema.tree.password })
+
+  userSchema.validate({ email, password }, (err) => {
+    if (err) done(err)
+  })
+
+  User.findOne({ email }).then((user) => {
+    if (!user) {
+      done(true)
+      return null
+    }
     return user.authenticate(password, user.password).then((user) => {
       done(null, user)
       return null
@@ -19,25 +66,8 @@ passport.use(new BasicStrategy((email, password, done) => {
   })
 }))
 
-export const basic = () => passport.authenticate('basic', { session: false })
-
 <%_ } _%>
-passport.use(new BearerStrategy((token, done) => {
-  Session.login(token).then((session) => {
-    done(null, session.user)
-    return null
-  }).catch(done)
-}))
-
-export const bearer = ({ required, roles = User.roles } = {}) => (req, res, next) =>
-  passport.authenticate('bearer', { session: false }, (err, user, info) => {
-    if (err || (required && !user) || (required && roles.indexOf(user.role) === -1)) {
-      return res.status(401).end()
-    }
-    req.logIn(user, { session: false }, (err) => err ? res.status(401).end() : next())
-  })(req, res, next)
-
-<%_ if (facebookLogin) {_%>
+<%_ if (authMethods.indexOf('facebook') !== -1) { _%>
 passport.use('facebook', new BearerStrategy((sessionToken, done) => {
   getMe({ sessionToken, fields: 'id, name, email, picture' }).then((user) => {
     return User.createFromFacebook(user)
@@ -47,6 +77,25 @@ passport.use('facebook', new BearerStrategy((sessionToken, done) => {
   }).catch(done)
 }))
 
-export const facebook = () => passport.authenticate('facebook', { session: false })
-
 <%_ } _%>
+passport.use('master', new BearerStrategy((token, done) => {
+  if (token === masterKey) {
+    done(null, {})
+  } else {
+    done(null, false)
+  }
+}))
+
+passport.use('session', new JwtStrategy({
+  secretOrKey: jwtSecret,
+  jwtFromRequest: ExtractJwt.fromExtractors([
+    ExtractJwt.fromUrlQueryParameter('access_token'),
+    ExtractJwt.fromBodyField('access_token'),
+    ExtractJwt.fromAuthHeaderWithScheme('Bearer')
+  ])
+}, ({ id }, done) => {
+  User.findById(id).then((user) => {
+    done(null, user)
+    return null
+  }).catch(done)
+}))

@@ -31,6 +31,7 @@
     "chalk": "^1.0.0",
     "lodash": "^4.15.0",
     "pluralize": "^3.0.0",
+    "rand-token": "^0.2.1",
     "yeoman-generator": "^0.23.0",
     "yosay": "^1.0.0"
   },
@@ -58,7 +59,11 @@
   "repository": "diegohaz/generator-rest",
   "scripts": {
     "prepublish": "gulp prepublish",
-    "test": "gulp"
+    "test": "gulp",
+    "patch": "npm version patch && npm publish",
+    "minor": "npm version minor && npm publish",
+    "major": "npm version major && npm publish",
+    "postpublish": "git push origin master --follow-tags"
   },
   "license": "MIT"
 }

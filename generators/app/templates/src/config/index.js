@@ -10,18 +10,31 @@ const requireProcessEnv = (name) => {
   return process.env[name]
 }
 
+/* istanbul ignore next */
+if (process.env.NODE_ENV !== 'production' && !process.env.CI) {
+  const dotenv = require('dotenv-safe')
+  dotenv.load({
+    path: path.join(__dirname, '../../.env'),
+    sample: path.join(__dirname, '../../.env.example')
+  })
+}
+
 const config = {
   all: {
     env: process.env.NODE_ENV || 'development',
-    root: path.join(__dirname, '../../..'),
+    root: path.join(__dirname, '../../'),
     port: process.env.PORT || 9000,
     ip: process.env.IP || '0.0.0.0',
-<%_ if (typeof defaultEmail !== 'undefined' && defaultEmail) { _%>
-    defaultEmail: '<%= defaultEmail %>',
-<%_ } _%>
-<%_ if (typeof sendgridKey !== 'undefined' && sendgridKey) { _%>
+    <%_ if (typeof passwordReset !== 'undefined' && passwordReset) { _%>
+    defaultEmail: 'no-reply@<%= slug %>.com',
+    <%_ } _%>
+    <%_ if (typeof sendgridKey !== 'undefined' && sendgridKey) { _%>
     sendgridKey: requireProcessEnv('SENDGRID_KEY'),
-<%_ } _%>
+    <%_ } _%>
+    masterKey: requireProcessEnv('MASTER_KEY'),
+    <%_ if (typeof generateAuthApi !== 'undefined' && generateAuthApi) { _%>
+    jwtSecret: requireProcessEnv('JWT_SECRET'),
+    <%_ } _%>
     mongo: {
       options: {
         db: {
@@ -32,19 +45,25 @@ const config = {
   },
   test: {
     mongo: {
-      uri: '<%= mongoTestUri %>'
+      uri: 'mongodb://localhost/<%= slug %>-test',
+      options: {
+        debug: false
+      }
     }
   },
   development: {
     mongo: {
-      uri: '<%= mongoDevUri %>'
+      uri: 'mongodb://localhost/<%= slug %>-dev',
+      options: {
+        debug: true
+      }
     }
   },
   production: {
     ip: process.env.IP || undefined,
     port: process.env.PORT || 8080,
     mongo: {
-      uri: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || '<%= mongoProdUri %>'
+      uri: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/<%= slug %>'
     }
   }
 }

@@ -1,0 +1,7 @@
+<%_ if (typeof sendgridKey !== 'undefined' && sendgridKey) { _%>
+SENDGRID_KEY=<%= sendgridKey %>
+<%_ } _%>
+MASTER_KEY=<%= masterKey %>
+<%_ if (typeof jwtSecret !== 'undefined' && jwtSecret) { _%>
+JWT_SECRET=<%= jwtSecret %>
+<%_ } _%>

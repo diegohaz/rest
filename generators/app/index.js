@@ -2,6 +2,7 @@
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
+var randtoken = require('rand-token');
 var _ = require('lodash');
 
 module.exports = yeoman.Base.extend({
@@ -14,217 +15,115 @@ module.exports = yeoman.Base.extend({
 
     return this.prompt([{
       type: 'input',
-      name: 'projectName',
-      message: 'Project name:',
+      name: 'name',
+      message: 'What\'s the project name?',
       default: _.startCase(this.appname)
     }, {
       type: 'input',
-      name: 'projectSlug',
-      message: 'Project slug:',
-      default: _.kebabCase(this.appname)
-    }, {
-      type: 'confirm',
-      name: 'https',
-      message: 'Force HTTPS in production mode?',
-      default: false
-    }, {
-      type: 'input',
       name: 'srcDir',
-      message: 'Source directory:',
+      message: 'Where to put the source code?',
       default: that.config.get('srcDir') || 'src'
     }, {
       type: 'input',
       name: 'apiDir',
-      message: 'API directory:',
+      message: function (props) {
+        return 'Where to put the API code (inside ./' + props.srcDir + ')?';
+      },
       default: that.config.get('apiDir') || 'api'
     }, {
-      type: 'input',
-      name: 'mongoTestUri',
-      message: 'MongoDB test uri:',
-      default: function (answers) {
-        return 'mongodb://localhost/' + answers.projectSlug + '-test';
-      }
-    }, {
-      type: 'input',
-      name: 'mongoDevUri',
-      message: 'MongoDB development uri:',
-      default: function (answers) {
-        return 'mongodb://localhost/' + answers.projectSlug + '-dev';
-      }
-    }, {
-      type: 'input',
-      name: 'mongoProdUri',
-      message: 'MongoDB production uri:',
-      default: function (answers) {
-        return 'mongodb://localhost/' + answers.projectSlug;
-      }
+      type: 'confirm',
+      name: 'https',
+      message: 'Do you to force SSL in production mode?',
+      default: false
     }, {
       type: 'confirm',
       name: 'generateAuthApi',
-      message: 'Generate authentication API?',
+      message: 'Do you want to generate authentication API?',
       default: true
     }, {
-      type: 'confirm',
-      name: 'facebookLogin',
-      message: 'Enable Facebook login?',
-      default: true,
-      when: function (answers) {
-        return answers.generateAuthApi;
-      }
-    }, {
-      type: 'confirm',
-      name: 'emailSignup',
-      message: 'Enable email sign up?',
-      default: true,
-      when: function (answers) {
-        return answers.generateAuthApi;
+      type: 'checkbox',
+      name: 'authMethods',
+      message: 'Which types of authentication do you want to enable?',
+      default: ['email', 'facebook'],
+      choices: [
+        'email',
+        'facebook',
+        {name: 'google', disabled: 'Soon - PRs are welcome!'},
+        {name: 'twitter', disabled: 'Soon - PRs are welcome!'}
+      ],
+      when: function (props) {
+        return props.generateAuthApi;
       }
     }, {
       type: 'confirm',
       name: 'passwordReset',
-      message: 'Generate password reset API? (will need SendGrid API Key)',
+      message: 'Do you want to generate password reset API (it will need a SendGrid API Key)?',
       default: false,
-      when: function (answers) {
-        return answers.emailSignup;
-      }
-    }, {
-      type: 'input',
-      name: 'defaultEmail',
-      message: 'Default sender email:',
-      default: function (answers) {
-        return 'no-reply@' + answers.projectSlug + '.com';
-      },
-      when: function (answers) {
-        return answers.passwordReset;
+      when: function (props) {
+        return props.generateAuthApi && props.authMethods.indexOf('email') !== -1;
       }
     }, {
       type: 'input',
       name: 'sendgridKey',
-      message: 'SendGrid API Key (https://sendgrid.com/docs/Classroom/Send/How_Emails_Are_Sent/api_keys.html):',
-      when: function (answers) {
-        return answers.passwordReset;
+      message: 'What\'s your SendGrid API Key (how to get one: https://sendgrid.com/docs/Classroom/Send/How_Emails_Are_Sent/api_keys.html)?',
+      when: function (props) {
+        return props.passwordReset;
       }
-    }]).then(function (answers) {
-      that.answers = answers;
-      that.config.set({srcDir: answers.srcDir, apiDir: answers.apiDir});
+    }]).then(function (props) {
+      that.props = props;
+      that.props.slug = _.kebabCase(that.props.name);
+      that.props.masterKey = randtoken.uid(32);
+      if (that.props.generateAuthApi) {
+        that.props.jwtSecret = randtoken.uid(32);
+      }
+      that.config.set({srcDir: props.srcDir, apiDir: props.apiDir});
     });
   },
 
   writing: function () {
-    this.fs.copy(
-      this.templatePath('babelrc'),
-      this.destinationPath('.babelrc')
-    );
+    var props = this.props;
+    var copy = this.fs.copy.bind(this.fs);
+    var copyTpl = this.fs.copyTpl.bind(this.fs);
+    var tPath = this.templatePath.bind(this);
+    var dPath = this.destinationPath.bind(this);
 
-    this.fs.copy(
-      this.templatePath('editorconfig'),
-      this.destinationPath('.editorconfig')
-    );
+    copy(tPath('editorconfig'), dPath('.editorconfig'));
+    copyTpl(tPath('gitignore'), dPath('.gitignore'), props);
+    copyTpl(tPath('travis.yml'), dPath('.travis.yml'), props);
+    copyTpl(tPath('env'), dPath('.env'), props);
+    copyTpl(tPath('env.example'), dPath('.env.example'), props);
+    copyTpl(tPath('_package.json'), dPath('package.json'), props);
+    copyTpl(tPath('src'), dPath(props.srcDir), props);
+    copyTpl(tPath('services/response'), dPath(props.srcDir + '/services/response'), props);
 
-    this.fs.copy(
-      this.templatePath('eslintrc'),
-      this.destinationPath('.eslintrc')
-    );
+    if (props.generateAuthApi) {
+      copyTpl(tPath('services/passport'), dPath(props.srcDir + '/services/passport'), props);
+      copyTpl(tPath('services/jwt'), dPath(props.srcDir + '/services/jwt'), props);
+      copyTpl(tPath('api/user'), dPath(props.srcDir + '/' + props.apiDir + '/user'), props);
 
-    this.fs.copyTpl(
-      this.templatePath('gitignore'),
-      this.destinationPath('.gitignore'),
-      this.answers
-    );
+      if (props.authMethods.length) {
+        copyTpl(tPath('api/auth'), dPath(props.srcDir + '/' + props.apiDir + '/auth'), props);
+      }
 
-    this.fs.copy(
-      this.templatePath('travis.yml'),
-      this.destinationPath('.travis.yml')
-    );
+      if (props.authMethods.indexOf('facebook') !== -1) {
+        copyTpl(tPath('services/facebook'), dPath(props.srcDir + '/services/facebook'), props);
+      }
+    }
 
-    this.fs.copyTpl(
-      this.templatePath('gulpfile.babel.js'),
-      this.destinationPath('gulpfile.babel.js'),
-      this.answers
-    );
-
-    this.fs.copy(
-      this.templatePath('mocha.conf.js'),
-      this.destinationPath('mocha.conf.js')
-    );
-
-    this.fs.copy(
-      this.templatePath('mocha.global.js'),
-      this.destinationPath('mocha.global.js')
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('package.json'),
-      this.destinationPath('package.json'),
-      this.answers
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('README.md'),
-      this.destinationPath('README.md'),
-      this.answers
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('src'),
-      this.destinationPath(this.answers.srcDir),
-      this.answers
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('services/response'),
-      this.destinationPath(this.answers.srcDir + '/services/response'),
-      this.answers
-    );
-
-    if (this.answers.generateAuthApi) {
-      this.fs.copyTpl(
-        this.templatePath('services/passport'),
-        this.destinationPath(this.answers.srcDir + '/services/passport'),
-        this.answers
-      );
-
-      this.fs.copyTpl(
-        this.templatePath('api/user'),
-        this.destinationPath(this.answers.srcDir + '/' + this.answers.apiDir + '/user'),
-        this.answers
-      );
-
-      this.fs.copyTpl(
-        this.templatePath('api/session'),
-        this.destinationPath(this.answers.srcDir + '/' + this.answers.apiDir + '/session'),
-        this.answers
+    if (props.passwordReset && props.sendgridKey) {
+      copyTpl(
+        tPath('api/password-reset'),
+        dPath(props.srcDir + '/' + props.apiDir + '/password-reset'),
+        props
       );
     }
 
-    if (this.answers.facebookLogin) {
-      this.fs.copyTpl(
-        this.templatePath('services/facebook'),
-        this.destinationPath(this.answers.srcDir + '/services/facebook'),
-        this.answers
-      );
-    }
-
-    if (this.answers.passwordReset && this.answers.sendgridKey) {
-      this.fs.copyTpl(
-        this.templatePath('api/password-reset'),
-        this.destinationPath(
-          this.answers.srcDir + '/' + this.answers.apiDir + '/password-reset'
-        ),
-        this.answers
-      );
-    }
-
-    if (this.answers.sendgridKey) {
-      this.fs.copyTpl(
-        this.templatePath('services/sendgrid'),
-        this.destinationPath(this.answers.srcDir + '/services/sendgrid'),
-        this.answers
-      );
+    if (props.sendgridKey) {
+      copyTpl(tPath('services/sendgrid'), dPath(props.srcDir + '/services/sendgrid'), props);
     }
   },
 
   install: function () {
-    // this.installDependencies();
+    this.installDependencies({bower: false});
   }
 });

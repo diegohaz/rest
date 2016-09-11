@@ -1,11 +1,9 @@
-import { errorHandler as queryErrorHandler } from 'querymen'
-import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { Router } from 'express'
 
 // api imports
 <%_ if (generateAuthApi) { _%>
 import user from './<%= apiDir %>/user'
-import session from './<%= apiDir %>/session'
+import auth from './<%= apiDir %>/auth'
 <%_ } _%>
 <%_ if (typeof passwordReset !== 'undefined' && passwordReset) { _%>
 import passwordReset from './<%= apiDir %>/password-reset'
@@ -13,16 +11,37 @@ import passwordReset from './<%= apiDir %>/password-reset'
 
 const router = new Router()
 
+/**
+ * @apiDefine master Master access only
+ * You must pass `access_token` parameter or a Bearer Token authorization header
+ * to access this endpoint.
+ */
+/**
+ * @apiDefine admin Admin access only
+ * You must pass `access_token` parameter or a Bearer Token authorization header
+ * to access this endpoint.
+ */
+/**
+ * @apiDefine user User access only
+ * You must pass `access_token` parameter or a Bearer Token authorization header
+ * to access this endpoint.
+ */
+/**
+ * @apiDefine listParams
+ * @apiParam {String} [q] Query to search.
+ * @apiParam {Number{1..30}} [page=1] Page number.
+ * @apiParam {Number{1..100}} [limit=30] Amount of returned items.
+ * @apiParam {String[]} [sort=-createdAt] Order of returned items.
+ * @apiParam {String[]} [fields] Fields to be returned.
+ */
+
 // api endpoints
 <%_ if (generateAuthApi) { _%>
 router.use('/users', user)
-router.use('/sessions', session)
+router.use('/auth', auth)
 <%_ } _%>
 <%_ if (typeof passwordReset !== 'undefined' && passwordReset) { _%>
 router.use('/password-resets', passwordReset)
 <%_ } _%>
-
-router.use(queryErrorHandler())
-router.use(bodyErrorHandler())
 
 export default router

@@ -5,7 +5,9 @@ public
 .idea
 .log
 dist
-/<%= srcDir %>/config/local.env.js
+docs
+.env
 npm-debug.log
+.nyc_output
 coverage
 cassettes
