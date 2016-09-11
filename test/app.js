@@ -13,7 +13,7 @@ function install (answers, done) {
         .on('exit', function (err) {
           if (!err) {
             spawnCommand('npm', ['run', 'lint']).on('exit', function (err) {
-              if (!err && props.generateAuthApi !== false) {
+              if (!err && answers.generateAuthApi !== false) {
                 spawnCommand('npm', ['test']).on('exit', done);
               } else {
                 done(err);
