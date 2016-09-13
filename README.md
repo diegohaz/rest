@@ -27,18 +27,24 @@ npm install -g yo
 npm install -g generator-rest
 ```
 
-## Usage
+## Generators
 
 Generate a new project:
 
 ```bash
-yo rest
+yo rest # generate a new project
+yo rest:api # generate a new api endpoint inside your project
 ```
 
-Generate a new api endpoint inside your project:
+## Commands
+
+After you generate your project, these commands are available in `package.json`:
 
 ```bash
-yo rest:api
+npm test # test using AVA
+npm run test:endpoints # skip unit tests
+npm run lint # lint using ESLint
+
 ```
 
 ## Directory structure
