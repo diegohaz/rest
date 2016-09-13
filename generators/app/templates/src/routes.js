@@ -1,6 +1,5 @@
 import { Router } from 'express'
 
-// api imports
 <%_ if (generateAuthApi) { _%>
 import user from './<%= apiDir %>/user'
 import auth from './<%= apiDir %>/auth'
@@ -35,7 +34,6 @@ const router = new Router()
  * @apiParam {String[]} [fields] Fields to be returned.
  */
 
-// api endpoints
 <%_ if (generateAuthApi) { _%>
 router.use('/users', user)
 router.use('/auth', auth)

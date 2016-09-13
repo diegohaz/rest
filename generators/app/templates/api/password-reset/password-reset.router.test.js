@@ -22,7 +22,7 @@ test.beforeEach(async (t) => {
 })
 
 test.afterEach.always(async (t) => {
-  await Promise.each([User, PasswordReset], (model) => model.remove())
+  await Promise.all([User.remove(), PasswordReset.remove()])
 })
 
 test.serial('POST /password-resets 202', async (t) => {

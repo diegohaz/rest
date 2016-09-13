@@ -76,7 +76,11 @@ module.exports = yeoman.Base.extend({
       if (that.props.generateAuthApi) {
         that.props.jwtSecret = randtoken.uid(32);
       }
-      that.config.set({srcDir: props.srcDir, apiDir: props.apiDir});
+      that.config.set({
+        srcDir: props.srcDir,
+        apiDir: props.apiDir,
+        authMethods: props.authMethods || []
+      });
     });
   },
 

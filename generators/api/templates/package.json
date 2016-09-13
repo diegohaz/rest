@@ -1,0 +1,6 @@
+{
+  "name": "<%= kebab %>",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./<%= kebab %>.router.js"
+}

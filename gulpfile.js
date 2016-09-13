@@ -10,7 +10,7 @@ var plumber = require('gulp-plumber');
 var coveralls = require('gulp-coveralls');
 
 gulp.task('lint', function () {
-  return gulp.src('**/*.js')
+  return gulp.src('generators/!(templates)**/index.js')
     .pipe(excludeGitignore())
     .pipe(eslint())
     .pipe(eslint.format())
@@ -22,7 +22,7 @@ gulp.task('nsp', function (cb) {
 });
 
 gulp.task('pre-test', function () {
-  return gulp.src(['generators/app/index.js'])
+  return gulp.src(['generators/!(templates)**/index.js'])
     .pipe(excludeGitignore())
     .pipe(istanbul({
       includeUntested: true

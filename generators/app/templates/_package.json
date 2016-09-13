@@ -11,7 +11,7 @@
     "prod": "npm run build && nodemon -i '*.test.js' -r dotenv-safe/config dist",
     "lint": "eslint --fix <%= srcDir %>/**",
     "clean": "del 'dist/!(.git*|Procfile)**'",
-    "copy": "copy package.json dist",
+    "copy": "copy package.json dist && copy <%= srcDir %>/**/package.json dist/<%= srcDir %>",
     "transpile": "babel <%= srcDir %> -d dist/<%= srcDir %> -s inline -i '<%= srcDir %>/**/*.test.js'",
     "build": "npm run clean && npm run copy && npm run transpile",
     "docs": "apidoc -i <%= srcDir %> -o docs && apidoc-markdown -p docs -o README.md"

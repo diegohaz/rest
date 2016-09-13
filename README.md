@@ -27,10 +27,18 @@ npm install -g yo
 npm install -g generator-rest
 ```
 
-Then generate your new project:
+## Usage
+
+Generate a new project:
 
 ```bash
 yo rest
+```
+
+Generate a new api endpoint inside your project:
+
+```bash
+yo rest:api
 ```
 
 ## Directory structure
