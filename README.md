@@ -44,7 +44,39 @@ After you generate your project, these commands are available in `package.json`:
 npm test # test using AVA
 npm run test:endpoints # skip unit tests
 npm run lint # lint using ESLint
+npm run dev # run the API in development mode
+npm run prod # run the API in production mode
+npm run build # build the project into dist folder
+npm run docs # generate API docs
+```
 
+## Deploy
+
+You can easily build your project by executing `npm run build`. It will put the build files in `./dist` so you can deploy its content anywhere.
+
+Here is an example on how to deploy to [Heroku](https://heroku.com) using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command-line):
+```bash
+npm run build # build files to ./dist
+cd dist
+heroku apps:create my-new-app # create a heroku app
+heroku git:remote --app my-new-app # add heroku git reference
+heroku addons:create mongolab # add the MongoDB service to this heroku app
+heroku config:set MASTER_KEY=masterKey JWT_SECRET=jwtSecret # set the environment variables (see the .env file)
+git add -A
+git commit -m "Some commit message"
+git push heroku master
+heroku open
+```
+
+The second time you deploy, you just need to:
+
+```bash
+npm run build
+cd dist
+git add -A
+git commit -m "Some commit message"
+git push heroku master
+heroku open
 ```
 
 ## Directory structure
