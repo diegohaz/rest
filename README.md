@@ -29,6 +29,8 @@ npm install -g generator-rest
 
 ## Generators
 
+Then, you can use `yo` to generate your project.
+
 ```bash
 yo rest # generate a new project
 yo rest:api # generate a new api endpoint inside your project
@@ -36,7 +38,7 @@ yo rest:api # generate a new api endpoint inside your project
 
 ## Commands
 
-After you generate your project, these commands are available in `package.json`:
+After you generate your project, these commands are available in `package.json`.
 
 ```bash
 npm test # test using AVA
@@ -54,15 +56,31 @@ You can easily build your project by executing `npm run build`. It will put the 
 
 Here is an example on how to deploy to [Heroku](https://heroku.com) using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command-line):
 ```bash
-npm run build # build files to ./dist
+# build files and change directory to ./dist
+npm run build
 cd dist
-heroku apps:create my-new-app # create a heroku app
-heroku git:remote --app my-new-app # add heroku git reference
-heroku addons:create mongolab # add the MongoDB service to this heroku app
-heroku config:set MASTER_KEY=masterKey JWT_SECRET=jwtSecret # set the environment variables (see the .env file)
+
+# start a new local git repository inside there
+git init
+
+# create a new heroku app
+heroku apps:create my-new-app
+
+# add heroku remote reference to the local repository
+heroku git:remote --app my-new-app
+
+# add the MongoLab addon to the heroku app
+heroku addons:create mongolab
+
+# set the environment variables to the heroku app (see the .env file in root directory)
+heroku config:set MASTER_KEY=masterKey JWT_SECRET=jwtSecret
+
+# commit and push the build files
 git add -A
 git commit -m "Some commit message"
 git push heroku master
+
+# open the deployed app in the browser
 heroku open
 ```
 
