@@ -36,7 +36,7 @@
     "files": [
       "<%= srcDir %>/**/*.test.js"
     ],
-    "concurrency": 3,
+    "concurrency": "[ \"$CI\" ] && 2 || 20",
     "require": [
       "babel-register"
     ],

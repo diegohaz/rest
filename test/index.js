@@ -1,28 +1,35 @@
 'use strict';
+var Promise = require('bluebird');
 var path = require('path');
 var fs = require('fs-extra');
 var spawnCommand = require('yeoman-generator/lib/actions/spawn_command').spawnCommand;
 var helpers = require('yeoman-test');
 
-function install(answers, done) {
+function install(answers, done, generateApis) {
   return helpers.run(path.join(__dirname, '../generators/app'))
     .withPrompts(answers)
     .toPromise()
     .then(function (dir) {
-      console.log('Generating APIs...')
-      defaultApi(dir).then(function (dir) {
-        return apiWithDifferentEndpointName(dir);
-      }).then(function (dir) {
-        return apiWithNoMethods(dir);
-      }).then(function (dir) {
-        return apiWithAllMasterMethods(dir);
-      }).then(function (dir) {
-        return apiWithAllAdminMethods(dir);
-      }).then(function (dir) {
-        return apiWithAllUserMethods(dir);
-      }).then(function (dir) {
-        return apiWithModelFields(dir);
-      }).then(function (dir) {
+      var promise = Promise.resolve(dir);
+
+      if (generateApis) {
+        console.log('Generating APIs...')
+        promise = defaultApi(dir).then(function (dir) {
+          return apiWithDifferentEndpointName(dir);
+        }).then(function (dir) {
+          return apiWithNoMethods(dir);
+        }).then(function (dir) {
+          return apiWithAllMasterMethods(dir);
+        }).then(function (dir) {
+          return apiWithAllAdminMethods(dir);
+        }).then(function (dir) {
+          return apiWithAllUserMethods(dir);
+        }).then(function (dir) {
+          return apiWithModelFields(dir);
+        });
+      }
+
+      promise.then(function (dir) {
         console.log('Copying node_modules folder...')
         fs.copySync(path.join(__dirname, '../node_modules'), path.join(dir, 'node_modules'));
         spawnCommand('npm', ['run', 'lint']).on('exit', function (err) {
@@ -99,21 +106,21 @@ describe('generator-rest', function () {
         https: true,
         passwordReset: true,
         sendgridKey: 'sendgridKey'
-      }, done);
+      }, done, true);
     });
     it('should install and pass tests', function () {});
   });
 
   describe('default install', function () {
     before(function (done) {
-      install({}, done);
+      install({}, done, true);
     });
     it('should install and pass tests', function () {});
   });
 
   describe('install with different src and api directories', function () {
     before(function (done) {
-      install({srcDir: 'server', apiDir: 'endpoints'}, done);
+      install({srcDir: 'server', apiDir: 'endpoints'}, done, true);
     });
     it('should install and pass tests', function () {});
   });
@@ -134,7 +141,7 @@ describe('generator-rest', function () {
 
   describe('install without auth API', function () {
     before(function (done) {
-      install({generateAuthApi: false}, done);
+      install({generateAuthApi: false}, done, true);
     });
     it('should install and pass tests', function () {});
   });
