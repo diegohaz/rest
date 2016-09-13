@@ -13,7 +13,7 @@ function install(answers, done, generateApis) {
       var promise = Promise.resolve(dir);
 
       if (generateApis) {
-        console.log('Generating APIs...')
+        console.log('Generating APIs...');
         promise = defaultApi(dir).then(function (dir) {
           return apiWithDifferentEndpointName(dir);
         }).then(function (dir) {
@@ -25,12 +25,14 @@ function install(answers, done, generateApis) {
         }).then(function (dir) {
           return apiWithAllUserMethods(dir);
         }).then(function (dir) {
+          return apiWithoutModel(dir);
+        }).then(function (dir) {
           return apiWithModelFields(dir);
         });
       }
 
       promise.then(function (dir) {
-        console.log('Copying node_modules folder...')
+        console.log('Copying node_modules folder...');
         fs.copySync(path.join(__dirname, '../node_modules'), path.join(dir, 'node_modules'));
         spawnCommand('npm', ['run', 'lint']).on('exit', function (err) {
           if (err) {
@@ -80,6 +82,13 @@ function apiWithAllUserMethods(dir) {
   return api({
     kebab: 'all-user',
     userMethods: ['POST', 'GET LIST', 'GET ONE', 'PUT', 'DELETE']
+  }, dir);
+}
+
+function apiWithoutModel(dir) {
+  return api({
+    kebab: 'no-model',
+    generateModel: false
   }, dir);
 }
 
