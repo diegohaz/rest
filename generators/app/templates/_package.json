@@ -36,6 +36,7 @@
     "files": [
       "<%= srcDir %>/**/*.test.js"
     ],
+    "concurrency": 3,
     "require": [
       "babel-register"
     ],
