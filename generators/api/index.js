@@ -106,6 +106,14 @@ module.exports = yeoman.Base.extend({
       type: 'input',
       name: 'modelFields',
       message: 'Which fields the model will have? (comma separated)',
+      filter: function (answer) {
+        if (!answer) {
+          return [];
+        }
+        return answer.split(',').map(function (field) {
+          return field.trim();
+        });
+      },
       when: function (props) {
         return props.generateModel;
       }

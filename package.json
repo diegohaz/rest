@@ -35,7 +35,9 @@
     "rand-token": "^0.2.1",
     "recast": "^0.11.13",
     "yeoman-generator": "^0.23.0",
-    "yosay": "^1.0.0",
+    "yosay": "^1.0.0"
+  },
+  "devDependencies": {
     "babel-runtime": "^6.11.6",
     "bcrypt": "^0.8.6",
     "body-parser": "^1.15.1",
@@ -59,9 +61,7 @@
     "querymen": "^2.0.0",
     "request": "^2.74.0",
     "request-promise": "^4.1.1",
-    "sendgrid": "^4.0.2"
-  },
-  "devDependencies": {
+    "sendgrid": "^4.0.2",
     "apidoc": "^0.16.1",
     "apidoc-markdown": "^0.2.0",
     "ava": "^0.16.0",
