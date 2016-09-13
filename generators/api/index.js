@@ -106,14 +106,6 @@ module.exports = yeoman.Base.extend({
       type: 'input',
       name: 'modelFields',
       message: 'Which fields the model will have? (comma separated)',
-      filter: function (answer) {
-        if (!answer) {
-          return [];
-        }
-        return answer.split(',').map(function (field) {
-          return field.trim();
-        });
-      },
       when: function (props) {
         return props.generateModel;
       }
@@ -121,7 +113,6 @@ module.exports = yeoman.Base.extend({
 
     return this.prompt(prompts).then(function (props) {
       this.props = props;
-      this.props.modelFields = this.props.modelFields || [];
       this.props.camel = _.camelCase(this.props.kebab);
       this.props.camels = pluralize(this.props.camel);
       this.props.pascal = _.upperFirst(this.props.camel);
@@ -133,6 +124,12 @@ module.exports = yeoman.Base.extend({
       this.props.authMethods = authMethods;
       this.props.srcDir = srcDir;
       this.props.apiDir = apiDir;
+
+      this.props.modelFields = this.props.modelFields || '';
+      this.props.modelFields = this.props.modelFields ?
+        this.props.modelFields.split(',').map(function (field) {
+          return field.trim();
+        }) : [];
     }.bind(this));
   },
 

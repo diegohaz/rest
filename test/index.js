@@ -95,7 +95,7 @@ function apiWithoutModel(dir) {
 function apiWithModelFields(dir) {
   return api({
     kebab: 'field',
-    modelFields: ['title', 'content']
+    modelFields: 'title, content'
   }, dir);
 }
 
