@@ -5,6 +5,7 @@ import nock from 'nock'
 import mockgoose from 'mockgoose'
 import mongoose from '../../config/mongoose'
 import express from '../../config/express'
+import { masterKey } from '../../config'
 import { User } from '../user'
 import routes, { PasswordReset } from '.'
 
@@ -25,53 +26,62 @@ test.afterEach.always(async (t) => {
   await Promise.all([User.remove(), PasswordReset.remove()])
 })
 
-test.serial('POST /password-resets 202', async (t) => {
+test.serial('POST /password-resets 202 (master)', async (t) => {
   nock.restore() && nock.isActive() || nock.activate()
   nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
   const { status } = await request(app())
     .post('/')
-    .send({ email: 'a@a.com', link: 'http://example.com' })
+    .send({ access_token: masterKey, email: 'a@a.com', link: 'http://example.com' })
   t.true(status === 202)
 })
 
-test.serial('POST /password-resets 400 - invalid email', async (t) => {
+test.serial('POST /password-resets 400 (master) - invalid email', async (t) => {
   nock.restore() && nock.isActive() || nock.activate()
   nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
   const { status, body } = await request(app())
     .post('/')
-    .send({ email: 'invalid', link: 'http://example.com' })
+    .send({ access_token: masterKey, email: 'invalid', link: 'http://example.com' })
   t.true(status === 400)
   t.true(typeof body === 'object')
   t.true(body.param === 'email')
 })
 
-test.serial('POST /password-resets 400 - missing email', async (t) => {
+test.serial('POST /password-resets 400 (master) - missing email', async (t) => {
   nock.restore() && nock.isActive() || nock.activate()
   nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
   const { status, body } = await request(app())
     .post('/')
-    .send({ link: 'http://example.com' })
+    .send({ access_token: masterKey, link: 'http://example.com' })
   t.true(status === 400)
   t.true(typeof body === 'object')
   t.true(body.param === 'email')
 })
 
-test.serial('POST /password-resets 400 - missing link', async (t) => {
+test.serial('POST /password-resets 400 (master) - missing link', async (t) => {
   nock.restore() && nock.isActive() || nock.activate()
   nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
   const { status, body } = await request(app())
     .post('/')
-    .send({ email: 'a@a.com' })
+    .send({ access_token: masterKey, email: 'a@a.com' })
   t.true(status === 400)
   t.true(typeof body === 'object')
   t.true(body.param === 'link')
 })
 
-test.serial('POST /password-resets 404', async (t) => {
+test.serial('POST /password-resets 404 (master)', async (t) => {
   const { status } = await request(app())
     .post('/')
-    .send({ email: 'b@b.com', link: 'http://example.com' })
+    .send({ access_token: masterKey, email: 'b@b.com', link: 'http://example.com' })
   t.true(status === 404)
+})
+
+test.serial('POST /password-resets 401', async (t) => {
+  nock.restore() && nock.isActive() || nock.activate()
+  nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
+  const { status } = await request(app())
+    .post('/')
+    .send({ email: 'a@a.com', link: 'http://example.com' })
+  t.true(status === 401)
 })
 
 test.serial('GET /password-resets/:token 200', async (t) => {
