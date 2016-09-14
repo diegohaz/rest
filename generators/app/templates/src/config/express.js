@@ -23,8 +23,8 @@ export default (routes) => {
     })
     app.use(forceSSL)
   }
-  <%_ } _%>
 
+  <%_ } _%>
   /* istanbul ignore next */
   if (env === 'production' || env === 'development') {
     app.use(cors())

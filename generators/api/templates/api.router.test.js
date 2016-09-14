@@ -43,16 +43,21 @@ test.before(async (t) => {
 
 test.beforeEach(async (t) => {
   <%_ if (hasSession) { _%>
-  const [ user, admin ] = await User.create([
+  const [ user, anotherUser, admin ] = await User.create([
     { email: 'a@a.com', password: '123456' },
-    { email: 'b@b.com', password: '123456', role: 'admin' }
+    { email: 'b@b.com', password: '123456' },
+    { email: 'c@c.com', password: '123456', role: 'admin' }
   ])
-  const [ userSession, adminSession ] = [ signSync(user.id), signSync(admin.id) ]
+  const [ userSession, anotherSession, adminSession ] = [
+    signSync(user.id), signSync(anotherUser.id), signSync(admin.id)
+  ]
   <%_ } _%>
   <%_ if (generateModel) { _%>
-  const <%= camel %> = await <%= pascal %>.create({})
+  const <%= camel %> = await <%= pascal %>.create({<%=
+    storeUser ? userField === 'user' ? ' user ' : ' ' + userField + ': user ' : ''
+  %>})
   <%_ } _%>
-  t.context = { ...t.context<% if (hasMaster) { %>, masterKey<% } %><% if (hasSession) { %>, userSession, adminSession<% } %><% if (generateModel) { %>, <%= camel %><% } %> }
+  t.context = { ...t.context<% if (hasMaster) { %>, masterKey<% } %><% if (hasSession) { %>, userSession, anotherSession, adminSession<% } %><% if (generateModel) { %>, <%= camel %><% } %> }
 })
 
 test.afterEach.always(async (t) => {
@@ -83,14 +88,14 @@ methods.forEach(function (method) {
   var contextAssignments = [];
   var additionalChecks = [];
 
-  if (method.permission) {
-    params.push('access_token: ' + (method.master ? 'masterKey' : '' + method.permission + 'Session'));
-    if (method.admin || method.user) {
-      contextAssignments.push(method.permission + 'Session');
-    } else {
-      contextAssignments.push('masterKey');
-    }
+  if (method.admin || method.user) {
+    params.push('access_token: ' + method.permission + 'Session');
+    contextAssignments.push(method.permission + 'Session');
+  } else if (method.master) {
+    params.push('access_token: masterKey');
+    contextAssignments.push('masterKey');
   }
+
   if (needsId) {
     additionalChecks.push('body.id === ' + camel + '.id');
     contextAssignments.push(camel);
@@ -122,6 +127,22 @@ test.serial('<%= verb %> <%= link %> <%= successCode %><%= permission %>', async
   <%_ }) _%>
   <%_ } _%>
 })
+<%_
+if (storeUser && userMethods.indexOf(verb) !== -1 && ['PUT', 'DELETE'].indexOf(verb) !== -1) {
+var assignments = contextAssignments;
+assignments[0] = 'anotherSession';
+var parameters = params;
+parameters[0] = 'access_token: anotherSession';
+_%>
+
+test.serial('<%= verb %> <%= link %> 401 (user) - another user', async (t) => {
+  const { <%= assignments.join(', ') %> } = t.context
+  const { status } = await request(app())
+    .<%= method.router %>(<%- request %>)
+    .send({ <%- parameters.join(', ') %> })
+  t.true(status === 401)
+})
+<%_ } _%>
 <%_ if (method.master) { _%>
 
 test.serial('<%= verb %> <%= link %> 401 (admin)', async (t) => {

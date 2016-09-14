@@ -25,9 +25,15 @@ function install(answers, done, generateApis) {
         }).then(function (dir) {
           return apiWithAllUserMethods(dir);
         }).then(function (dir) {
+          return apiWithDifferentUserField(dir);
+        }).then(function (dir) {
+          return apiWithOnlyPostUserMethod(dir);
+        }).then(function (dir) {
           return apiWithoutModel(dir);
         }).then(function (dir) {
           return apiWithModelFields(dir);
+        }).then(function (dir) {
+          return apiWithUserModelField(dir);
         });
       }
 
@@ -40,7 +46,10 @@ function install(answers, done, generateApis) {
           }
           spawnCommand('npm', ['test']).on('exit', done);
         });
-      }).catch(done);
+      }).catch(function (err) {
+        console.log(err);
+        done(err);
+      });
     });
 }
 
@@ -85,6 +94,21 @@ function apiWithAllUserMethods(dir) {
   }, dir);
 }
 
+function apiWithDifferentUserField(dir) {
+  return api({
+    kebab: 'user-field',
+    userMethods: ['POST', 'PUT', 'DELETE'],
+    userField: 'author'
+  }, dir);
+}
+
+function apiWithOnlyPostUserMethod(dir) {
+  return api({
+    kebab: 'only-post-user',
+    userMethods: ['POST']
+  }, dir);
+}
+
 function apiWithoutModel(dir) {
   return api({
     kebab: 'no-model',
@@ -96,6 +120,14 @@ function apiWithModelFields(dir) {
   return api({
     kebab: 'field',
     modelFields: 'title, content'
+  }, dir);
+}
+
+function apiWithUserModelField(dir) {
+  return api({
+    kebab: 'user-model-field',
+    modelFields: 'user',
+    userMethods: ['POST']
   }, dir);
 }
 

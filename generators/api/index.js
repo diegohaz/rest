@@ -109,6 +109,24 @@ module.exports = yeoman.Base.extend({
       when: function (props) {
         return props.generateModel;
       }
+    }, {
+      type: 'confirm',
+      name: 'storeUser',
+      default: true,
+      message: function (props) {
+        return 'Do you want to store in a field the user who created the ' + props.kebab + '?';
+      },
+      when: function (props) {
+        return props.generateModel && props.userMethods && props.userMethods.indexOf('POST') !== -1;
+      }
+    }, {
+      type: 'input',
+      name: 'userField',
+      message: 'What\'s the name of the field which will store the user?',
+      default: 'user',
+      when: function (props) {
+        return props.storeUser;
+      }
     }];
 
     return this.prompt(prompts).then(function (props) {
@@ -130,6 +148,12 @@ module.exports = yeoman.Base.extend({
         this.props.modelFields.split(',').map(function (field) {
           return field.trim();
         }) : [];
+
+      this.props.storeUser = this.props.storeUser || false;
+
+      if (props.userField && this.props.modelFields.indexOf(props.userField) !== -1) {
+        this.props.modelFields.splice(this.props.modelFields.indexOf(props.userField), 1);
+      }
     }.bind(this));
   },
 

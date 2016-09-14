@@ -5,9 +5,13 @@ import { <%= pascal %> } from '.'
 <%_ } _%>
 <%_ if (methods.indexOf('POST') !== -1) { _%>
 
-export const create = (<% if (modelFields.length) { %>{ bodymen: { body } }<% } else { %>{ body }<% } %>, res, next) =>
+export const create = ({ <%= storeUser ? 'user, ' : '' %><%- modelFields.length ?  'bodymen: { body }' : 'body' %> }, res, next) =>
   <%_ if (generateModel) { _%>
+  <%_ if (storeUser) { _%>
+  <%= pascal %>.create({ ...body, <%= userField === 'user' ? 'user' : userField + ': user' %> })
+  <%_ } else { _%>
   <%= pascal %>.create(body)
+  <%_ } _%>
     .then((<%= camel %>) => <%= camel %>.view(true))
     .then(success(res, 201))
     .catch(next)
@@ -42,10 +46,24 @@ export const show = ({ params }, res, next) =>
 <%_ } _%>
 <%_ if (methods.indexOf('PUT') !== -1) { _%>
 
-export const update = ({<% if (modelFields.length) { %> bodymen: { body }<% } else { %> body<% } %>, params }, res, next) =>
+export const update = ({ <%=
+  storeUser && userMethods.indexOf('PUT') !== -1 ? 'user, ' : ''
+%><%- modelFields.length ?  'bodymen: { body }' : 'body' %>, params }, res, next) =>
   <%_ if (generateModel) { _%>
   <%= pascal %>.findById(params.id)
     .then(notFound(res))
+    <%_ if (storeUser && userMethods.indexOf('PUT') !== -1) { _%>
+    .then((<%= camel %>) => {
+      if (!<%= camel %>) return null
+      const isAdmin = user.role === 'admin'
+      const isSameUser = <%= camel %>.<%= userField %>.equals(user.id)
+      if (!isSameUser && !isAdmin) {
+        res.status(401).end()
+        return null
+      }
+      return <%= camel %>
+    })
+    <%_ } _%>
     .then((<%= camel %>) => <%= camel %> ? _.merge(<%= camel %>, body).save() : null)
     .then((<%= camel %>) => <%= camel %> ? <%= camel %>.view(true) : null)
     .then(success(res))
@@ -56,10 +74,24 @@ export const update = ({<% if (modelFields.length) { %> bodymen: { body }<% } el
 <%_ } _%>
 <%_ if (methods.indexOf('DELETE') !== -1) { _%>
 
-export const destroy = ({ params }, res, next) =>
+export const destroy = ({ <%=
+  storeUser && userMethods.indexOf('DELETE') !== -1 ? 'user, ' : ''
+%>params }, res, next) =>
   <%_ if (generateModel) { _%>
   <%= pascal %>.findById(params.id)
     .then(notFound(res))
+    <%_ if (storeUser && userMethods.indexOf('DELETE') !== -1) { _%>
+    .then((<%= camel %>) => {
+      if (!<%= camel %>) return null
+      const isAdmin = user.role === 'admin'
+      const isSameUser = <%= camel %>.<%= userField %>.equals(user.id)
+      if (!isSameUser && !isAdmin) {
+        res.status(401).end()
+        return null
+      }
+      return <%= camel %>
+    })
+    <%_ } _%>
     .then((<%= camel %>) => <%= camel %> ? <%= camel %>.remove() : null)
     .then(success(res, 204))
     .catch(next)

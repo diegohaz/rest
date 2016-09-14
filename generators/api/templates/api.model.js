@@ -1,7 +1,14 @@
 import mongoose, { Schema } from 'mongoose'
 
-<%_ if (modelFields.length) { _%>
+<%_ if (modelFields.length || storeUser) { _%>
 const <%= camel %>Schema = new Schema({
+  <%_ if (storeUser) { _%>
+  <%= userField %>: {
+    type: Schema.ObjectId,
+    ref: 'User',
+    required: true
+  }<%= modelFields.length ? ',' : '' %>
+  <%_ } _%>
   <%_ modelFields.forEach(function (field, i) { _%>
   <%= field %>: {
     type: String
@@ -16,26 +23,24 @@ const <%= camel %>Schema = new Schema({}, { timestamps: true })
 
 <%= camel %>Schema.methods = {
   view (full) {
-    <%_ if (modelFields.length) { _%>
     const view = {
       // simple view
       id: this.id,
-      <%= modelFields.map(function (field) {
-        return field + ': this.' + field;
-      }).join(',\n') %>
-    }
-    <%_ } else { _%>
-    const view = {
-      // simple view
-      id: this.id
-    }
-    <%_ } _%>
-
-    return full ? {
-      ...view,
-      // add properties for a full view
+      <%_ if (storeUser) { _%>
+      <%= userField %>: this.<%= userField %>.view(full),
+      <%_ } _%>
+      <%_ if (modelFields.length) { _%>
+      <%_ modelFields.forEach(function (field) { _%>
+      <%= field %>: this.<%= field %>,
+      <%_ }) _%>
+      <%_ } _%>
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
+    }
+
+    return full ? {
+      ...view
+      // add properties for a full view
     } : view
   }
 }
