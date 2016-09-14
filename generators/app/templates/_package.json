@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "test": "cross-env NODE_ENV=test nyc ava",
+    "test": "[ \"$CI\" ] && cross-env NODE_ENV=test nyc ava -c 1 || cross-env NODE_ENV=test nyc ava",
     "test:endpoints": "npm test -- -m 'GET*' -m 'POST*' -m 'PUT*' -m 'DELETE*'",
     "dev": "nodemon -i '*.test.js' .",
     "prod": "npm run build && nodemon -i '*.test.js' -r dotenv-safe/config dist",
@@ -36,7 +36,6 @@
     "files": [
       "<%= srcDir %>/**/*.test.js"
     ],
-    "concurrency": 1,
     "require": [
       "babel-register"
     ],

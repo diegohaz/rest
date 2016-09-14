@@ -199,6 +199,7 @@ src/
 - Support optional phone authentication
 - Support optional email confirmation process
 - Support Google, Twitter, GitHub and other social login methods
+- Socket.io support
 
 PRs are welcome.
 
