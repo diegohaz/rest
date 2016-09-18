@@ -62,7 +62,7 @@
     "eslint-config-standard": "^6.0.0",
     "eslint-plugin-promise": "^2.0.1",
     "eslint-plugin-standard": "^2.0.0",
-    "mockgoose": "git+https://github.com/diegohaz/Mockgoose.git",
+    "mockgoose": "^6.0.8",
     "nock": "^8.0.0",
     "nodemon": "^1.10.2",
     "nyc": "^8.1.0",
