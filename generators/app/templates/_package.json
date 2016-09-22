@@ -33,6 +33,7 @@
     "require": [
       "babel-register"
     ],
+    "concurrency": 5,
     "timeout": "2m",
     "babel": "inherit"
   },
