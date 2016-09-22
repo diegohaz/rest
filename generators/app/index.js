@@ -92,6 +92,7 @@ module.exports = yeoman.Base.extend({
     var dPath = this.destinationPath.bind(this);
 
     copy(tPath('editorconfig'), dPath('.editorconfig'));
+    copy(tPath('eslintrc'), dPath('.eslintrc'));
     copyTpl(tPath('gitignore'), dPath('.gitignore'), props);
     copyTpl(tPath('travis.yml'), dPath('.travis.yml'), props);
     copyTpl(tPath('env'), dPath('.env'), props);

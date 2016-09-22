@@ -16,12 +16,6 @@
     "build": "npm run clean && npm run copy && npm run transpile",
     "docs": "apidoc -i <%= srcDir %> -o docs && apidoc-markdown -p docs -o README.md && opn docs/index.html"
   },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "standard"
-    ]
-  },
   "babel": {
     "presets": [
       "es2015",
