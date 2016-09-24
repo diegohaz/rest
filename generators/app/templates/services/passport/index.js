@@ -36,7 +36,6 @@ export const master = () =>
 
 export const session = ({ required, roles = User.roles } = {}) => (req, res, next) =>
   passport.authenticate('session', { session: false }, (err, user, info) => {
-    // console.log(err, user, info)
     if (err || (required && !user) || (required && !~roles.indexOf(user.role))) {
       return res.status(401).end()
     }
