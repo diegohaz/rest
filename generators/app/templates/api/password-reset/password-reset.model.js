@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 import { uid } from 'rand-token'
 
-const PasswordResetSchema = new Schema({
+const passwordResetSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User',
@@ -20,7 +20,7 @@ const PasswordResetSchema = new Schema({
   }
 })
 
-PasswordResetSchema.methods = {
+passwordResetSchema.methods = {
   view (full) {
     return {
       user: this.user.view(full),
@@ -29,4 +29,4 @@ PasswordResetSchema.methods = {
   }
 }
 
-export default mongoose.model('PasswordReset', PasswordResetSchema)
+export default mongoose.model('PasswordReset', passwordResetSchema)

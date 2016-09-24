@@ -18,7 +18,7 @@ const compare = require('bluebird').promisify(bcrypt.compare)
 <%_ } _%>
 const roles = ['user', 'admin']
 
-const UserSchema = new Schema({
+const userSchema = new Schema({
   email: {
     type: String,
     match: /^\S+@\S+\.\S+$/,
@@ -57,7 +57,7 @@ const UserSchema = new Schema({
   timestamps: true
 })
 
-UserSchema.path('email').set(function (email) {
+userSchema.path('email').set(function (email) {
   if (!this.picture || this.picture.indexOf('https://gravatar.com') === 0) {
     const hash = crypto.createHash('md5').update(email).digest('hex')
     this.picture = `https://gravatar.com/avatar/${hash}?d=identicon`
@@ -71,7 +71,7 @@ UserSchema.path('email').set(function (email) {
 })
 
 <%_ if (emailSignup) { _%>
-UserSchema.pre('save', function (next) {
+userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next()
 
   /* istanbul ignore next */
@@ -86,7 +86,7 @@ UserSchema.pre('save', function (next) {
 })
 
 <%_ } _%>
-UserSchema.methods = {
+userSchema.methods = {
   view (full) {
     let view = {}
     let fields = ['id', 'name', 'picture']
@@ -106,8 +106,9 @@ UserSchema.methods = {
   <%_ } _%>
 }
 
-UserSchema.statics = {
-  roles<%_ if (facebookLogin) { _%>,
+userSchema.statics = {
+  <%_ if (facebookLogin) { _%>
+  roles,
 
   createFromFacebook ({ id, name, email, picture }) {
     return this.findOne({ $or: [{ 'facebook.id': id }, { email }] }).then((user) => {
@@ -132,9 +133,11 @@ UserSchema.statics = {
       }
     })
   }
+  <%_ } else { _%>
+  roles
   <%_ } _%>
 }
 
-UserSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
+userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 
-export default mongoose.model('User', UserSchema)
+export default mongoose.model('User', userSchema)
