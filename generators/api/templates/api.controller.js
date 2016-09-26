@@ -24,6 +24,9 @@ export const create = ({ <%= storeUser ? 'user, ' : '' %><%- modelFields.length 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   <%_ if (generateModel) { _%>
   <%= pascal %>.find(query, select, cursor)
+    <%_ if (storeUser) { _%>
+    .populate('<%= userField %>')
+    <%_ } _%>
     .then((<%= camels %>) => <%= camels %>.map((<%= camel %>) => <%= camel %>.view()))
     .then(success(res))
     .catch(next)
@@ -36,6 +39,9 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) =>
 export const show = ({ params }, res, next) =>
   <%_ if (generateModel) { _%>
   <%= pascal %>.findById(params.id)
+    <%_ if (storeUser) { _%>
+    .populate('<%= userField %>')
+    <%_ } _%>
     .then(notFound(res))
     .then((<%= camel %>) => <%= camel %> ? <%= camel %>.view() : null)
     .then(success(res))
@@ -51,6 +57,9 @@ export const update = ({ <%=
 %><%- modelFields.length ?  'bodymen: { body }' : 'body' %>, params }, res, next) =>
   <%_ if (generateModel) { _%>
   <%= pascal %>.findById(params.id)
+    <%_ if (storeUser) { _%>
+    .populate('<%= userField %>')
+    <%_ } _%>
     .then(notFound(res))
     <%_ if (storeUser && userMethods.indexOf('PUT') !== -1) { _%>
     .then((<%= camel %>) => {

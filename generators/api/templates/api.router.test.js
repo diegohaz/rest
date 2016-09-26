@@ -108,6 +108,13 @@ methods.forEach(function (method) {
       return 'body.' + field + " === 'test'"
     }));
   }
+  if (verb !== 'DELETE' && storeUser && method.user) {
+    if (method.method === 'GET LIST') {
+      additionalChecks.push('typeof body[0].' + userField + " === 'object'")
+    } else {
+      additionalChecks.push('typeof body.' + userField + " === 'object'")
+    }
+  }
 _%>
 
 test.serial('<%= verb %> <%= link %> <%= successCode %><%= permission %>', async (t) => {
