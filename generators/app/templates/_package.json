@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "test": "[ \"$CI\" ] && c=1 || c=5; cross-env NODE_ENV=test nyc -r lcov -r text ava -c $c",
+    "test": "[ \"$CI\" ] && c=1 || c=5; cross-env NODE_ENV=test nyc ava -c $c",
     "test:unit": "npm test '<%= srcDir %>/**/!(*.router*).test.js'",
     "test:integration": "npm test '<%= srcDir %>/**/*.router.test.js'",
-    "coverage": "opn coverage/lcov-report/index.html",
+    "coverage": "nyc report -r lcov && opn coverage/lcov-report/index.html",
     "dev": "nodemon -i '*.test.js' .",
     "prod": "npm run build && nodemon -i '*.test.js' -r dotenv-safe/config dist",
     "lint": "eslint <%= srcDir %>/**",
