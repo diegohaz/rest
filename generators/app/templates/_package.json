@@ -5,8 +5,10 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "test": "[ \"$CI\" ] && cross-env NODE_ENV=test nyc ava -c 1 || cross-env NODE_ENV=test nyc ava",
-    "test:endpoints": "npm test -- -m 'GET*' -m 'POST*' -m 'PUT*' -m 'DELETE*'",
+    "test": "[ \"$CI\" ] && c=1 || c=5; cross-env NODE_ENV=test nyc -r lcov -r text ava -c $c",
+    "test:unit": "npm test '<%= srcDir %>/**/!(*.router*).test.js'",
+    "test:integration": "npm test '<%= srcDir %>/**/*.router.test.js'",
+    "coverage": "opn coverage/lcov-report/index.html",
     "dev": "nodemon -i '*.test.js' .",
     "prod": "npm run build && nodemon -i '*.test.js' -r dotenv-safe/config dist",
     "lint": "eslint <%= srcDir %>/**",
@@ -50,7 +52,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.14.0",
     "copy": "^0.3.0",
-    "cross-env": "^2.0.1",
+    "cross-env": "^3.0.0",
     "del-cli": "^0.2.0",
     "dotenv-safe": "^2.3.1",
     "eslint": "^3.3.1",
@@ -86,10 +88,8 @@
     "jsonwebtoken": "^7.1.9",
     <%_ } _%>
     "lodash": "^4.13.1",
-    "method-override": "^2.3.6",
     "mongoose": "^4.4.19",
     "mongoose-create-unique": "^0.4.1",
-    "mongoose-deep-populate": "^3.0.0",
     "mongoose-keywords": "^0.3.1",
     "morgan": "^1.7.0",
     <%_ if (generateAuthApi) { _%>

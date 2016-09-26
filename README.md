@@ -44,7 +44,9 @@ After you generate your project, these commands are available in `package.json`.
 
 ```bash
 npm test # test using AVA
-npm run test:endpoints # skip unit tests
+npm run test:unit # run unit tests
+npm run test:integration # run integration tests
+npm run coverage # open the last test coverage report on the browser
 npm run lint # lint using ESLint
 npm run dev # run the API in development mode
 npm run prod # run the API in production mode
