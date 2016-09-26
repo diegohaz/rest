@@ -6,7 +6,6 @@ import cors from 'cors'
 import compression from 'compression'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
-import methodOverride from 'method-override'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env } from './'
@@ -34,7 +33,6 @@ export default (routes) => {
 
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(bodyParser.json())
-  app.use(methodOverride())
   app.use(routes)
   app.use(queryErrorHandler())
   app.use(bodyErrorHandler())
