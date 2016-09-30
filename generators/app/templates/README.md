@@ -133,3 +133,24 @@ git commit -m "Some commit message"
 git push heroku master
 heroku open
 ```
+## Directory structure
+
+### <%= srcDir %>/<%= apiDir %>/
+
+Here is where the API endpoints are defined. Each API has its own folder.
+
+#### <%= srcDir %>/<%= apiDir %>/some-endpoint/some-endpoint.model.js
+
+It defines the Mongoose schema and model for the API endpoint. Any changes to the data model should be done here.
+
+#### <%= srcDir %>/<%= apiDir %>/some-endpoint/some-endpoint.controller.js
+
+This is the API controller file. It defines the main router middlewares which use the API model.
+
+#### <%= srcDir %>/<%= apiDir %>/some-endpoint/some-endpoint.router.js
+
+This is the entry file of the API. It defines the routes using, along other middlewares (like session, validation etc.), the middlewares defined in the `some-endpoint.controller.js` file.
+
+### services/
+
+Here you can put `helpers`, `libraries` and other types of modules which you want to use in your APIs.

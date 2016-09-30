@@ -3,6 +3,8 @@
 
 [Watch this video](https://www.youtube.com/watch?v=6x-ijyG-ack) for an overview on how to use **generator-rest** and deploy your project to [Heroku](https://heroku.com).
 
+[Here](https://github.com/diegohaz/generator-rest-example)'s a full commented example of the generated project. Take a look if you want to learn more about the generated code.
+
 ## Features
 
  - **Highly customizable** - You can choose what to install
@@ -172,6 +174,8 @@ heroku open
 
 ## Directory structure
 
+### Overview
+
 You can customize the `src` and `api` directories.
 
 ```
@@ -197,6 +201,26 @@ src/
 ├─ index.js
 └─ routes.js
 ```
+
+### src/api/
+
+Here is where the API endpoints are defined. Each API has its own folder.
+
+#### src/api/some-endpoint/some-endpoint.model.js
+
+It defines the Mongoose schema and model for the API endpoint. Any changes to the data model should be done here.
+
+#### src/api/some-endpoint/some-endpoint.controller.js
+
+This is the API controller file. It defines the main router middlewares which use the API model.
+
+#### src/api/some-endpoint/some-endpoint.router.js
+
+This is the entry file of the API. It defines the routes using, along other middlewares (like session, validation etc.), the middlewares defined in the `some-endpoint.controller.js` file.
+
+### services/
+
+Here you can put `helpers`, `libraries` and other types of modules which you want to use in your APIs.
 
 ## TODO
 
