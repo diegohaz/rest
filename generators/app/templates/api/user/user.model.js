@@ -49,9 +49,6 @@ const userSchema = new Schema({
       return service + ': String'
     }).join(',\n') %>
   },
-  facebook: {
-    id: String
-  },
   <%_ } _%>
   role: {
     type: String,
