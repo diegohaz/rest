@@ -99,6 +99,7 @@
     "request": "^2.74.0",
     "request-promise": "^4.1.1",
     "sendgrid": "^4.0.2",
+    "sinon": "^1.17.5",
     "supertest": "^2.0.0",
     "supertest-as-promised": "^4.0.0",
     "yeoman-assert": "^2.0.0",
