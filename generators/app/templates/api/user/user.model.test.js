@@ -1,5 +1,9 @@
-<%_ var emailSignup = authMethods.indexOf('email') !== -1 _%>
-<%_ var facebookLogin = authMethods.indexOf('facebook') !== -1 _%>
+<%_
+var emailSignup = authMethods.indexOf('email') !== -1;
+var services = authMethods.filter(function (method) {
+  return method !== 'email';
+});
+_%>
 import test from 'ava'
 import crypto from 'crypto'
 import mockgoose from 'mockgoose'
@@ -53,36 +57,37 @@ test('authenticate', async (t) => {
   t.falsy(await t.context.user.authenticate('blah'))
 })
 <%_ } _%>
-<%_ if (facebookLogin) { _%>
+<%_ if (services.length) { _%>
 
-test('createFromFacebook', async (t) => {
+test('createFromService', async (t) => {
   const { User, user } = t.context
-  const fbUser = {
+  const serviceUser = {
+    service: 'facebook',
     id: '123',
     name: 'Test Name',
     email: 'test@test.com',
-    picture: { data: { url: 'test.jpg' } }
+    picture: 'test.jpg'
   }
 
-  const updatedUser = await User.createFromFacebook({ ...fbUser, email: 'a@a.com' })
+  const updatedUser = await User.createFromService({ ...serviceUser, email: 'a@a.com' })
   t.true(updatedUser.id === user.id)
-  t.true(updatedUser.facebook.id === fbUser.id)
-  t.true(updatedUser.name === fbUser.name)
+  t.true(updatedUser.services.facebook === serviceUser.id)
+  t.true(updatedUser.name === serviceUser.name)
   t.true(updatedUser.email === user.email)
-  t.true(updatedUser.picture === fbUser.picture.data.url)
+  t.true(updatedUser.picture === serviceUser.picture)
 
-  const updatedFbUser = await User.createFromFacebook(fbUser)
+  const updatedFbUser = await User.createFromService(serviceUser)
   t.true(updatedFbUser.id === user.id)
-  t.true(updatedFbUser.facebook.id === fbUser.id)
-  t.true(updatedFbUser.name === fbUser.name)
+  t.true(updatedFbUser.services.facebook === serviceUser.id)
+  t.true(updatedFbUser.name === serviceUser.name)
   t.true(updatedFbUser.email === user.email)
-  t.true(updatedFbUser.picture === fbUser.picture.data.url)
+  t.true(updatedFbUser.picture === serviceUser.picture)
 
-  const createdFbUser = await User.createFromFacebook({ ...fbUser, id: '321' })
+  const createdFbUser = await User.createFromService({ ...serviceUser, id: '321' })
   t.true(createdFbUser.id !== user.id)
-  t.true(createdFbUser.facebook.id === '321')
-  t.true(createdFbUser.name === fbUser.name)
-  t.true(createdFbUser.email === fbUser.email)
-  t.true(createdFbUser.picture === fbUser.picture.data.url)
+  t.true(createdFbUser.services.facebook === '321')
+  t.true(createdFbUser.name === serviceUser.name)
+  t.true(createdFbUser.email === serviceUser.email)
+  t.true(createdFbUser.picture === serviceUser.picture)
 })
 <%_ } _%>

@@ -69,7 +69,7 @@ passport.use('basic', new BasicStrategy((email, password, done) => {
 <%_ if (authMethods.indexOf('facebook') !== -1) { _%>
 passport.use('facebook', new BearerStrategy((sessionToken, done) => {
   getMe({ sessionToken, fields: 'id, name, email, picture' }).then((user) => {
-    return User.createFromFacebook(user)
+    return User.createFromService(user)
   }).then((user) => {
     done(null, user)
     return null

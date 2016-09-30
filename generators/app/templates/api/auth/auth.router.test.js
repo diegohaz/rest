@@ -1,8 +1,13 @@
-<%_ var emailSignup = authMethods.indexOf('email') !== -1 _%>
-<%_ var facebookLogin = authMethods.indexOf('facebook') !== -1 _%>
+<%_
+var emailSignup = authMethods.indexOf('email') !== -1;
+var services = authMethods.filter(function (method) {
+  return method !== 'email';
+});
+_%>
 import test from 'ava'
-<%_ if (facebookLogin) { _%>
-import nock from 'nock'
+<%_ if (services.length) { _%>
+import Promise from 'bluebird'
+import { stub } from 'sinon'
 <%_ } _%>
 import request from 'supertest-as-promised'
 import mockgoose from 'mockgoose'
@@ -10,6 +15,9 @@ import mockgoose from 'mockgoose'
 import { masterKey } from '../../config'
 <%_ } _%>
 import { verify } from '../../services/jwt'
+<%_ services.forEach(function(service) { _%>
+import * as <%= service %> from '../../services/<%= service %>'
+<%_ }) _%>
 import express from '../../config/express'
 import mongoose from '../../config/mongoose'
 import routes from '.'
@@ -104,19 +112,18 @@ test.serial('POST /auth 401 (master) - missing auth', async (t) => {
   t.true(status === 401)
 })
 <%_ } _%>
-<%_ if (facebookLogin) { _%>
+<%_ if (services.length) { _%>
+<%_ services.forEach(function(service) { _%>
 
-test.serial('POST /auth/facebook 201', async (t) => {
-  const fbUser = {
+test.serial('POST /auth/<%= service %> 201', async (t) => {
+  stub(<%= service %>, 'getMe', () => Promise.resolve({
     id: '123',
     name: 'user',
     email: 'b@b.com',
-    picture: { data: { url: 'test.jpg' } }
-  }
-  nock.restore() && nock.isActive() || nock.activate()
-  nock('https://graph.facebook.com').get('/me').query(true).reply(200, fbUser)
+    picture: 'test.jpg'
+  }))
   const { status, body } = await request(app())
-    .post('/facebook')
+    .post('/<%= service %>')
     .send({ access_token: '123' })
   t.true(status === 201)
   t.true(typeof body === 'object')
@@ -125,8 +132,10 @@ test.serial('POST /auth/facebook 201', async (t) => {
   t.notThrows(verify(body.token))
 })
 
-test.serial('POST /auth/facebook 401 - missing token', async (t) => {
-  const { status } = await request(app()).post('/facebook')
+test.serial('POST /auth/<%= service %> 401 - missing token', async (t) => {
+  const { status } = await request(app())
+    .post('/<%= service %>')
   t.true(status === 401)
 })
+<%_ }) _%>
 <%_ } _%>

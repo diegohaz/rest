@@ -14,8 +14,9 @@ test('getMe', async (t) => {
   nock('https://graph.facebook.com').get('/me').query(true).reply(200, fbUser)
 
   const data = await facebook.getMe({ accessToken: '123', fields: 'id, name, email, picture' })
+  t.true(data.service === 'facebook')
   t.true(data.id === fbUser.id)
   t.true(data.name === fbUser.name)
   t.true(data.email === fbUser.email)
-  t.true(data.picture.data.url === fbUser.picture.data.url)
+  t.true(data.picture === fbUser.picture.data.url)
 })

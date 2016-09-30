@@ -1,9 +1,13 @@
-<%_ var emailSignup = authMethods.indexOf('email') !== -1 _%>
-<%_ var facebookLogin = authMethods.indexOf('facebook') !== -1 _%>
+<%_
+var emailSignup = authMethods.indexOf('email') !== -1;
+var services = authMethods.filter(function (method) {
+  return method !== 'email';
+});
+_%>
 import crypto from 'crypto'
 <%_ if (emailSignup) { _%>
 import bcrypt from 'bcrypt'
-<%_ if (facebookLogin) { _%>
+<%_ if (services.length) { _%>
 import randtoken from 'rand-token'
 <%_ } _%>
 <%_ } _%>
@@ -39,7 +43,12 @@ const userSchema = new Schema({
     index: true,
     trim: true
   },
-  <%_ if (facebookLogin) { _%>
+  <%_ if (services.length) { _%>
+  services: {
+    <%- services.map(function(service) {
+      return service + ': String'
+    }).join(',\n') %>
+  },
   facebook: {
     id: String
   },
@@ -107,29 +116,21 @@ userSchema.methods = {
 }
 
 userSchema.statics = {
-  <%_ if (facebookLogin) { _%>
+  <%_ if (services.length) { _%>
   roles,
 
-  createFromFacebook ({ id, name, email, picture }) {
-    return this.findOne({ $or: [{ 'facebook.id': id }, { email }] }).then((user) => {
+  createFromService ({ service, id, email, name, picture }) {
+    return this.findOne({ $or: [{ [`services.${service}`]: id }, { email }] }).then((user) => {
       if (user) {
-        user.facebook.id = id
+        user.services[service] = id
         user.name = name
-        user.picture = picture.data.url
+        user.picture = picture
         return user.save()
       } else {
         <%_ if (emailSignup) { _%>
         const password = randtoken.generate(16)
         <%_ } _%>
-        return this.create({
-          name,
-          email,
-          <%_ if (emailSignup) { _%>
-          password,
-          <%_ } _%>
-          facebook: { id },
-          picture: picture && picture.data && picture.data.url
-        })
+        return this.create({ services: { [service]: id }, email<% if (emailSignup) { %>, password<% } %>, name, picture })
       }
     })
   }

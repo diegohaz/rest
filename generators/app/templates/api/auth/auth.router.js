@@ -1,13 +1,15 @@
-<%_ var emailSignup = authMethods.indexOf('email') !== -1 _%>
-<%_ var facebookLogin = authMethods.indexOf('facebook') !== -1 _%>
 <%_
-  var passport = [];
-  if (emailSignup) {
-    passport.push('basic', 'master');
-  }
-  if (facebookLogin) {
-    passport.push('facebook');
-  }
+var emailSignup = authMethods.indexOf('email') !== -1;
+var services = authMethods.filter(function (method) {
+  return method !== 'email';
+});
+var passport = [];
+if (emailSignup) {
+  passport.push('basic', 'master');
+}
+if (services.length) {
+  passport.push.apply(passport, services)
+}
 _%>
 import { Router } from 'express'
 import { login } from './auth.controller'
@@ -35,19 +37,24 @@ router.post('/',
   login)
 
 <%_ } _%>
-<%_ if (facebookLogin) { _%>
+<%_ if (services.length) { _%>
+<%_
+services.forEach(function(service) {
+var upperFirst = service.charAt(0).toUpperCase() + service.slice(1);
+_%>
 /**
- * @api {post} /auth/facebook Authenticate with Facebook
- * @apiName AuthenticateFacebook
+ * @api {post} /auth/<%= service %> Authenticate with <%= upperFirst %>
+ * @apiName Authenticate<%= upperFirst %>
  * @apiGroup Auth
- * @apiParam {String} access_token Facebook user accessToken.
+ * @apiParam {String} access_token <%= upperFirst %> user accessToken.
  * @apiSuccess (Success 201) {String} token User `access_token` to be passed to other requests.
  * @apiSuccess (Success 201) {Object} user Current user's data.
  * @apiError 401 Invalid credentials.
  */
-router.post('/facebook',
-  facebook(),
+router.post('/<%= service %>',
+  <%= service %>(),
   login)
 
+<%_ }) _%>
 <%_ } _%>
 export default router
