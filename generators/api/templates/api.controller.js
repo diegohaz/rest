@@ -1,6 +1,6 @@
 <%_ if (generateModel && methods.length) { _%>
 import _ from 'lodash'
-import { success, notFound } from '../../services/response/'
+import { success, notFound<% if (storeUser && (userMethods.indexOf('PUT') !== -1 || userMethods.indexOf('DELETE') !== -1)) { %>, authorOrAdmin<% } %> } from '../../services/response/'
 import { <%= pascal %> } from '.'
 <%_ } _%>
 <%_ if (methods.indexOf('POST') !== -1) { _%>
@@ -62,16 +62,7 @@ export const update = ({ <%=
     <%_ } _%>
     .then(notFound(res))
     <%_ if (storeUser && userMethods.indexOf('PUT') !== -1) { _%>
-    .then((<%= camel %>) => {
-      if (!<%= camel %>) return null
-      const isAdmin = user.role === 'admin'
-      const isSameUser = <%= camel %>.<%= userField %>.equals(user.id)
-      if (!isSameUser && !isAdmin) {
-        res.status(401).end()
-        return null
-      }
-      return <%= camel %>
-    })
+    .then(authorOrAdmin(res, user, '<%= userField %>'))
     <%_ } _%>
     .then((<%= camel %>) => <%= camel %> ? _.merge(<%= camel %>, body).save() : null)
     .then((<%= camel %>) => <%= camel %> ? <%= camel %>.view(true) : null)
@@ -90,16 +81,7 @@ export const destroy = ({ <%=
   <%= pascal %>.findById(params.id)
     .then(notFound(res))
     <%_ if (storeUser && userMethods.indexOf('DELETE') !== -1) { _%>
-    .then((<%= camel %>) => {
-      if (!<%= camel %>) return null
-      const isAdmin = user.role === 'admin'
-      const isSameUser = <%= camel %>.<%= userField %>.equals(user.id)
-      if (!isSameUser && !isAdmin) {
-        res.status(401).end()
-        return null
-      }
-      return <%= camel %>
-    })
+    .then(authorOrAdmin(res, user, '<%= userField %>'))
     <%_ } _%>
     .then((<%= camel %>) => <%= camel %> ? <%= camel %>.remove() : null)
     .then(success(res, 204))
