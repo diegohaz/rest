@@ -44,7 +44,11 @@ function install(answers, done, generateApis) {
           if (err) {
             return done(err);
           }
-          spawnCommand('npm', ['test']).on('exit', done);
+          if (process.env.TRAVIS) {
+            spawnCommand('npm', ['test', '--', '--serial']).on('exit', done);
+          } else {
+            spawnCommand('npm', ['test']).on('exit', done);
+          }
         });
       }).catch(function (err) {
         console.log(err);
