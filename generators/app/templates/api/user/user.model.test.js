@@ -1,9 +1,3 @@
-<%_
-var emailSignup = authMethods.indexOf('email') !== -1;
-var services = authMethods.filter(function (method) {
-  return method !== 'email';
-});
-_%>
 import test from 'ava'
 import crypto from 'crypto'
 import mockgoose from 'mockgoose'
@@ -50,14 +44,14 @@ test('picture', async (t) => {
   await user.save()
   t.true(user.picture === 'test.jpg')
 })
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 
 test('authenticate', async (t) => {
   t.truthy(await t.context.user.authenticate('123456'))
   t.falsy(await t.context.user.authenticate('blah'))
 })
 <%_ } _%>
-<%_ if (services.length) { _%>
+<%_ if (authServices.length) { _%>
 
 test('createFromService', async (t) => {
   const { User, user } = t.context

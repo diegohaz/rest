@@ -1,14 +1,13 @@
-<%_ var emailSignup = authMethods.indexOf('email') !== -1 _%>
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
-import {<% if (emailSignup) { %> basic,<% } %> master, session } from '../../services/passport'
-import { index, showMe, show, create, update<% if (emailSignup) { %>, updatePassword<% } %>, destroy } from './user.controller'
+import {<% if (passwordSignup) { %> basic,<% } %> master, session } from '../../services/passport'
+import { index, showMe, show, create, update<% if (passwordSignup) { %>, updatePassword<% } %>, destroy } from './user.controller'
 import { schema } from './user.model'
 export User, { schema } from './user.model'
 
 const router = new Router()
-const { email<% if (emailSignup) { %>, password<% } %>, name, picture, role } = schema.tree
+const { email<% if (passwordSignup) { %>, password<% } %>, name, picture, role } = schema.tree
 
 /**
  * @api {get} /users Retrieve users
@@ -56,7 +55,7 @@ router.get('/:id',
  * @apiPermission master
  * @apiParam {String} access_token Master access_token.
  * @apiParam {String} email User's email.
- <%_ if (emailSignup) { _%>
+ <%_ if (passwordSignup) { _%>
  * @apiParam {String{6..}} password User's password.
  <%_ } _%>
  * @apiParam {String} [name] User's name.
@@ -69,7 +68,7 @@ router.get('/:id',
  */
 router.post('/',
   master(),
-  body({ email<% if (emailSignup) { %>, password<% } %>, name, picture, role }),
+  body({ email<% if (passwordSignup) { %>, password<% } %>, name, picture, role }),
   create)
 
 /**
@@ -90,7 +89,7 @@ router.put('/:id',
   body({ name, picture }),
   update)
 
-<%_ if (emailSignup) {_%>
+<%_ if (passwordSignup) {_%>
 /**
  * @api {put} /users/:id/password Update password
  * @apiName UpdatePassword

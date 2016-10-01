@@ -5,6 +5,8 @@ var fs = require('fs-extra');
 var spawnCommand = require('yeoman-generator/lib/actions/spawn_command').spawnCommand;
 var helpers = require('yeoman-test');
 
+var authServices = ['facebook'];
+
 function install(answers, done, generateApis) {
   return helpers.run(path.join(__dirname, '../generators/app'))
     .withPrompts(answers)
@@ -141,20 +143,20 @@ function api(answers, dir) {
 }
 
 describe('generator-rest', function () {
-  describe('full install', function () {
+  describe('default install', function () {
+    before(function (done) {
+      install({}, done, true);
+    });
+    it('should install and pass tests', function () {});
+  });
+
+  describe('install with password reset option', function () {
     before(function (done) {
       install({
         https: true,
         passwordReset: true,
         sendgridKey: 'sendgridKey'
       }, done, true);
-    });
-    it('should install and pass tests', function () {});
-  });
-
-  describe('default install', function () {
-    before(function (done) {
-      install({}, done, true);
     });
     it('should install and pass tests', function () {});
   });
@@ -166,16 +168,18 @@ describe('generator-rest', function () {
     it('should install and pass tests', function () {});
   });
 
-  describe('install without facebook auth', function () {
-    before(function (done) {
-      install({authMethods: ['email']}, done);
+  authServices.forEach(function (service) {
+    describe('install with ' + service + ' auth method', function () {
+      before(function (done) {
+        install({authMethods: [service]}, done);
+      });
+      it('should install and pass tests', function () {});
     });
-    it('should install and pass tests', function () {});
   });
 
-  describe('install without email auth', function () {
+  describe('install with all auth methods', function () {
     before(function (done) {
-      install({authMethods: ['facebook']}, done);
+      install({authMethods: ['password'].concat(authServices)}, done);
     });
     it('should install and pass tests', function () {});
   });

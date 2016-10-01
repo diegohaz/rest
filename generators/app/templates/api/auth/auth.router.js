@@ -1,14 +1,10 @@
 <%_
-var emailSignup = authMethods.indexOf('email') !== -1;
-var services = authMethods.filter(function (method) {
-  return method !== 'email';
-});
 var passport = [];
-if (emailSignup) {
+if (passwordSignup) {
   passport.push('basic', 'master');
 }
-if (services.length) {
-  passport.push.apply(passport, services)
+if (authServices.length) {
+  passport.push.apply(passport, authServices)
 }
 _%>
 import { Router } from 'express'
@@ -19,7 +15,7 @@ import { <%= passport.join(', ') %> } from '../../services/passport'
 
 const router = new Router()
 
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 /**
  * @api {post} /auth Authenticate
  * @apiName Authenticate
@@ -37,9 +33,8 @@ router.post('/',
   login)
 
 <%_ } _%>
-<%_ if (services.length) { _%>
 <%_
-services.forEach(function(service) {
+authServices.forEach(function(service) {
 var upperFirst = service.charAt(0).toUpperCase() + service.slice(1);
 _%>
 /**
@@ -56,5 +51,4 @@ router.post('/<%= service %>',
   login)
 
 <%_ }) _%>
-<%_ } _%>
 export default router
