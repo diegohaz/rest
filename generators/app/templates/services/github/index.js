@@ -1,7 +1,7 @@
 import request from 'request-promise'
 import bluebird from 'bluebird'
 
-var userRequest = request({
+const userRequest = (accessToken) => request({
     uri: 'https://api.github.com/user',
     json: true,
     qs: {
@@ -9,7 +9,7 @@ var userRequest = request({
     }
 })
 
-var emailRequest = request({
+const emailRequest = (accessToken) => request({
     uri: 'https://api.github.com/user/emails',
     json: true,
     qs: {
@@ -17,10 +17,10 @@ var emailRequest = request({
     }
 })
 
-export const getMe = ({ accessToken, fields }) =>
-    bluebird.all([userRequest, emailRequest])
+export const getMe = ({ accessToken }) =>
+    bluebird.all([userRequest(accessToken), emailRequest(accessToken)])
         .spread((responseOfUserReq, responseOfEmailReq) => ({
-            service: "GitHub",
+            service: "github",
             id: responseOfUserReq.id,
             name: responseOfUserReq.login,
             email: responseOfEmailReq[0].email,
