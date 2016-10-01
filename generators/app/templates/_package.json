@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.11.6",
-    <%_ if (generateAuthApi && authMethods.indexOf('email') !== -1) { _%>
+    <%_ if (generateAuthApi && passwordSignup) { _%>
     "bcrypt": "^0.8.6",
     <%_ } _%>
     "bluebird": "^3.4.0",
@@ -95,7 +95,7 @@
     "morgan": "^1.7.0",
     <%_ if (generateAuthApi) { _%>
     "passport": "^0.3.2",
-    <%_ if (authMethods.indexOf('email') !== -1) { _%>
+    <%_ if (passwordSignup) { _%>
     "passport-http": "^0.3.0",
     <%_ } _%>
     "passport-http-bearer": "^1.0.1",
