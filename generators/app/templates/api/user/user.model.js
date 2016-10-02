@@ -1,23 +1,17 @@
-<%_
-var emailSignup = authMethods.indexOf('email') !== -1;
-var services = authMethods.filter(function (method) {
-  return method !== 'email';
-});
-_%>
 import crypto from 'crypto'
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 import bcrypt from 'bcrypt'
-<%_ if (services.length) { _%>
+<%_ if (authServices.length) { _%>
 import randtoken from 'rand-token'
 <%_ } _%>
 <%_ } _%>
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 import { env } from '../../config'
 <%_ } _%>
 
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 const compare = require('bluebird').promisify(bcrypt.compare)
 <%_ } _%>
 const roles = ['user', 'admin']
@@ -31,7 +25,7 @@ const userSchema = new Schema({
     trim: true,
     lowercase: true
   },
-  <%_ if (emailSignup) { _%>
+  <%_ if (passwordSignup) { _%>
   password: {
     type: String,
     required: true,
@@ -43,9 +37,9 @@ const userSchema = new Schema({
     index: true,
     trim: true
   },
-  <%_ if (services.length) { _%>
+  <%_ if (authServices.length) { _%>
   services: {
-    <%- services.map(function(service) {
+    <%- authServices.map(function(service) {
       return service + ': String'
     }).join(',\n') %>
   },
@@ -76,7 +70,7 @@ userSchema.path('email').set(function (email) {
   return email
 })
 
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next()
 
@@ -104,7 +98,7 @@ userSchema.methods = {
     fields.forEach((field) => { view[field] = this[field] })
 
     return view
-  }<%_ if (emailSignup) { _%>,
+  }<%_ if (passwordSignup) { _%>,
 
   authenticate (password) {
     return compare(password, this.password).then((valid) => valid ? this : false)
@@ -113,7 +107,7 @@ userSchema.methods = {
 }
 
 userSchema.statics = {
-  <%_ if (services.length) { _%>
+  <%_ if (authServices.length) { _%>
   roles,
 
   createFromService ({ service, id, email, name, picture }) {
@@ -124,10 +118,10 @@ userSchema.statics = {
         user.picture = picture
         return user.save()
       } else {
-        <%_ if (emailSignup) { _%>
+        <%_ if (passwordSignup) { _%>
         const password = randtoken.generate(16)
         <%_ } _%>
-        return this.create({ services: { [service]: id }, email<% if (emailSignup) { %>, password<% } %>, name, picture })
+        return this.create({ services: { [service]: id }, email<% if (passwordSignup) { %>, password<% } %>, name, picture })
       }
     })
   }

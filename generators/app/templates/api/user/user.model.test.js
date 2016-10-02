@@ -1,9 +1,3 @@
-<%_
-var emailSignup = authMethods.indexOf('email') !== -1;
-var services = authMethods.filter(function (method) {
-  return method !== 'email';
-});
-_%>
 import test from 'ava'
 import crypto from 'crypto'
 import mockgoose from 'mockgoose'
@@ -50,19 +44,19 @@ test('picture', async (t) => {
   await user.save()
   t.true(user.picture === 'test.jpg')
 })
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 
 test('authenticate', async (t) => {
   t.truthy(await t.context.user.authenticate('123456'))
   t.falsy(await t.context.user.authenticate('blah'))
 })
 <%_ } _%>
-<%_ if (services.length) { _%>
+<%_ if (authServices.length) { _%>
 
 test('createFromService', async (t) => {
   const { User, user } = t.context
   const serviceUser = {
-    service: 'facebook',
+    service: '<%= authServices[0] %>',
     id: '123',
     name: 'Test Name',
     email: 'test@test.com',
@@ -71,21 +65,21 @@ test('createFromService', async (t) => {
 
   const updatedUser = await User.createFromService({ ...serviceUser, email: 'a@a.com' })
   t.true(updatedUser.id === user.id)
-  t.true(updatedUser.services.facebook === serviceUser.id)
+  t.true(updatedUser.services.<%= authServices[0] %> === serviceUser.id)
   t.true(updatedUser.name === serviceUser.name)
   t.true(updatedUser.email === user.email)
   t.true(updatedUser.picture === serviceUser.picture)
 
   const updatedFbUser = await User.createFromService(serviceUser)
   t.true(updatedFbUser.id === user.id)
-  t.true(updatedFbUser.services.facebook === serviceUser.id)
+  t.true(updatedFbUser.services.<%= authServices[0] %> === serviceUser.id)
   t.true(updatedFbUser.name === serviceUser.name)
   t.true(updatedFbUser.email === user.email)
   t.true(updatedFbUser.picture === serviceUser.picture)
 
   const createdFbUser = await User.createFromService({ ...serviceUser, id: '321' })
   t.true(createdFbUser.id !== user.id)
-  t.true(createdFbUser.services.facebook === '321')
+  t.true(createdFbUser.services.<%= authServices[0] %> === '321')
   t.true(createdFbUser.name === serviceUser.name)
   t.true(createdFbUser.email === serviceUser.email)
   t.true(createdFbUser.picture === serviceUser.picture)

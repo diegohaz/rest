@@ -56,7 +56,7 @@ export const update = ({ bodymen: { body }, params, user }, res, next) =>
     .then(success(res))
     .catch(next)
 
-<%_ if (authMethods.indexOf('email') !== -1) { _%>
+<%_ if (passwordSignup) { _%>
 export const updatePassword = ({ bodymen: { body }, params, user }, res, next) =>
   User.findById(params.id === 'me' ? user.id : params.id)
     .then(notFound(res))

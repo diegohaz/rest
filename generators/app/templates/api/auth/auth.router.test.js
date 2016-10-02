@@ -1,21 +1,15 @@
-<%_
-var emailSignup = authMethods.indexOf('email') !== -1;
-var services = authMethods.filter(function (method) {
-  return method !== 'email';
-});
-_%>
 import test from 'ava'
-<%_ if (services.length) { _%>
+<%_ if (authServices.length) { _%>
 import Promise from 'bluebird'
 import { stub } from 'sinon'
 <%_ } _%>
 import request from 'supertest-as-promised'
 import mockgoose from 'mockgoose'
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 import { masterKey } from '../../config'
 <%_ } _%>
 import { verify } from '../../services/jwt'
-<%_ services.forEach(function(service) { _%>
+<%_ authServices.forEach(function(service) { _%>
 import * as <%= service %> from '../../services/<%= service %>'
 <%_ }) _%>
 import express from '../../config/express'
@@ -37,7 +31,7 @@ test.beforeEach(async (t) => {
 test.afterEach.always(async (t) => {
   await User.remove()
 })
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 
 test.serial('POST /auth 201 (master)', async (t) => {
   const { status, body } = await request(app())
@@ -112,8 +106,7 @@ test.serial('POST /auth 401 (master) - missing auth', async (t) => {
   t.true(status === 401)
 })
 <%_ } _%>
-<%_ if (services.length) { _%>
-<%_ services.forEach(function(service) { _%>
+<%_ authServices.forEach(function(service) { _%>
 
 test.serial('POST /auth/<%= service %> 201', async (t) => {
   stub(<%= service %>, 'getMe', () => Promise.resolve({
@@ -139,4 +132,3 @@ test.serial('POST /auth/<%= service %> 401 - missing token', async (t) => {
   t.true(status === 401)
 })
 <%_ }) _%>
-<%_ } _%>

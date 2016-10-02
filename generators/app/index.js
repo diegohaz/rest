@@ -44,13 +44,13 @@ module.exports = yeoman.Base.extend({
       type: 'checkbox',
       name: 'authMethods',
       message: 'Which types of authentication do you want to enable?',
-      default: ['email', 'facebook'],
+      default: ['password'],
       choices: [
-        'email',
+        'password',
         'facebook',
+	    'github',
         {name: 'google', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/7)'},
         {name: 'twitter', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/8)'},
-        {name: 'github', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/10)'}
       ],
       when: function (props) {
         return props.generateAuthApi;
@@ -61,7 +61,7 @@ module.exports = yeoman.Base.extend({
       message: 'Do you want to generate password reset API (it will need a SendGrid API Key)?',
       default: false,
       when: function (props) {
-        return props.generateAuthApi && props.authMethods.indexOf('email') !== -1;
+        return props.generateAuthApi && props.authMethods.indexOf('password') !== -1;
       }
     }, {
       type: 'input',
@@ -73,6 +73,10 @@ module.exports = yeoman.Base.extend({
     }]).then(function (props) {
       that.props = props;
       that.props.slug = _.kebabCase(that.props.name);
+      that.props.passwordSignup = props.authMethods && props.authMethods.indexOf('password') !== -1;
+      that.props.authServices = props.authMethods && props.authMethods.filter(function (method) {
+        return method !== 'password';
+      });
       that.props.masterKey = randtoken.uid(32);
       if (that.props.generateAuthApi) {
         that.props.jwtSecret = randtoken.uid(32);
@@ -112,9 +116,9 @@ module.exports = yeoman.Base.extend({
         copyTpl(tPath('api/auth'), dPath(props.srcDir + '/' + props.apiDir + '/auth'), props);
       }
 
-      if (props.authMethods.indexOf('facebook') !== -1) {
-        copyTpl(tPath('services/facebook'), dPath(props.srcDir + '/services/facebook'), props);
-      }
+      props.authServices.forEach(function (service) {
+        copyTpl(tPath('services/' + service), dPath(props.srcDir + '/services/' + service), props);
+      });
     }
 
     if (props.passwordReset && props.sendgridKey) {
