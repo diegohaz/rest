@@ -48,9 +48,9 @@ module.exports = yeoman.Base.extend({
       choices: [
         'email',
         'facebook',
+		'github'
         {name: 'google', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/7)'},
         {name: 'twitter', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/8)'},
-        'github'
       ],
       when: function (props) {
         return props.generateAuthApi;

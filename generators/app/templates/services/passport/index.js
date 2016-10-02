@@ -7,10 +7,10 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { jwtSecret, masterKey } from '../../config'
 <%_ if (authMethods.indexOf('facebook') !== -1) { _%>
-import { getMe } from '../facebook'
+import * as facebookService from '../facebook'
 <%_ } _%>
 <%_ if (authMethods.indexOf('github') !== -1) { _%>
-import { getMe } from '../github'
+import * as githubService from '../github'
 <%_ } _%>
 import User<% if (authMethods.indexOf('email') !== -1) { %>, { schema }<% } %> from '../../<%= apiDir %>/user/user.model'
 
@@ -27,20 +27,15 @@ export const basic = () => (req, res, next) =>
       next()
     })
   })(req, res, next)
-
 <%_ } _%>
 <%_ if (authMethods.indexOf('facebook') !== -1) { _%>
 export const facebook = () =>
   passport.authenticate('facebook', { session: false })
-
 <%_ } _%>
-
 <%_ if (authMethods.indexOf('github') !== -1) { _%>
 export const github = () =>
   passport.authenticate('github', { session: false })
-
 <%_ } _%>
-
 export const master = () =>
   passport.authenticate('master', { session: false })
 
@@ -78,7 +73,7 @@ passport.use('basic', new BasicStrategy((email, password, done) => {
 <%_ } _%>
 <%_ if (authMethods.indexOf('facebook') !== -1) { _%>
 passport.use('facebook', new BearerStrategy((sessionToken, done) => {
-  getMe({ sessionToken, fields: 'id, name, email, picture' }).then((user) => {
+  facebookService.getMe({ sessionToken, fields: 'id, name, email, picture' }).then((user) => {
     return User.createFromService(user)
   }).then((user) => {
     done(null, user)
@@ -89,7 +84,7 @@ passport.use('facebook', new BearerStrategy((sessionToken, done) => {
 <%_ } _%>
 <%_ if (authMethods.indexOf('github') !== -1) { _%>
 passport.use('github', new BearerStrategy((sessionToken, done) => {
-  getMe({ sessionToken, fields: 'id, name, email, picture' }).then((user) => {
+  githubService.getMe({ sessionToken, fields: 'id, name, email, picture' }).then((user) => {
     return User.createFromService(user)
   }).then((user) => {
     done(null, user)

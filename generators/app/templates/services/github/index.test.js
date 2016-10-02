@@ -68,8 +68,8 @@ test('getMe', async (t) => {
   nock('https://api.github.com').get('/user').query(true).reply(200, ghUser)
   nock('https://api.github.com').get('/user/emails').query(true).reply(200, ghUserEmails)
 
-  const data = await github.getMe({ accessToken: '123', fields: 'id, name, email, picture' })
-  t.true(data.service === 'GitHub')
+  const data = await github.getMe({ accessToken: '123' })
+  t.true(data.service === 'gitHub')
   t.true(data.id === ghUser.id)
   t.true(data.name === ghUser.login)
   t.true(data.email === ghUserEmails[0].email)
