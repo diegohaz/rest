@@ -11,7 +11,7 @@
  - **Really RESTful** - It follows the best practices
  - **ES6!** - Using [babel](https://babeljs.io/)
  - **User registration API** - Using [passport](http://passportjs.org/) (optional)
- - **Social login API** - Currently only Facebook (optional)
+ - **Social login API** - Currently only Facebook and GitHub (optional)
  - **Password reset API** - Sending emails with [SendGrid API](https://sendgrid.com/docs/API_Reference/index.html) (optional)
  - **Listing query strings** - `q`, `page`, `limit`, `fields` etc. already provided by [querymen](https://github.com/diegohaz/querymen)
  - **Query string validator** - Using [querymen](https://github.com/diegohaz/querymen)
@@ -226,10 +226,14 @@ Here you can put `helpers`, `libraries` and other types of modules which you wan
 
 - Support optional phone authentication
 - Support optional email confirmation process
-- Support Google, Twitter, GitHub and other social login methods
+- Support Google, Twitter and other social login methods
 - Socket.io support
 
 PRs are welcome.
+
+## Credits
+
+[@QzSG](https://github.com/QzSG) and all [contributors](https://github.com/diegohaz/generator-rest/graphs/contributors)
 
 ## License
 
