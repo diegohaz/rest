@@ -53,35 +53,47 @@ test('authenticate', async (t) => {
 <%_ } _%>
 <%_ if (authServices.length) { _%>
 
-test('createFromService', async (t) => {
-  const { User, user } = t.context
-  const serviceUser = {
-    service: '<%= authServices[0] %>',
-    id: '123',
-    name: 'Test Name',
-    email: 'test@test.com',
-    picture: 'test.jpg'
-  }
+const serviceUser = {
+  id: '123',
+  name: 'Test Name',
+  email: 'test@test.com',
+  picture: 'test.jpg'
+}
+<%_ } _%>
+<%_ authServices.forEach(function (service) { _%>
 
-  const updatedUser = await User.createFromService({ ...serviceUser, email: 'a@a.com' })
+test('createFromService (<%= service %>) - email already registered', async (t) => {
+  const { User, user } = t.context
+  const updatedUser = await User.createFromService({
+    ...serviceUser,
+    service: '<%= service %>',
+    email: 'a@a.com'
+  })
   t.true(updatedUser.id === user.id)
-  t.true(updatedUser.services.<%= authServices[0] %> === serviceUser.id)
+  t.true(updatedUser.services.<%= service %> === serviceUser.id)
   t.true(updatedUser.name === serviceUser.name)
   t.true(updatedUser.email === user.email)
   t.true(updatedUser.picture === serviceUser.picture)
-
-  const updatedFbUser = await User.createFromService(serviceUser)
-  t.true(updatedFbUser.id === user.id)
-  t.true(updatedFbUser.services.<%= authServices[0] %> === serviceUser.id)
-  t.true(updatedFbUser.name === serviceUser.name)
-  t.true(updatedFbUser.email === user.email)
-  t.true(updatedFbUser.picture === serviceUser.picture)
-
-  const createdFbUser = await User.createFromService({ ...serviceUser, id: '321' })
-  t.true(createdFbUser.id !== user.id)
-  t.true(createdFbUser.services.<%= authServices[0] %> === '321')
-  t.true(createdFbUser.name === serviceUser.name)
-  t.true(createdFbUser.email === serviceUser.email)
-  t.true(createdFbUser.picture === serviceUser.picture)
 })
-<%_ } _%>
+
+test('createFromService (<%= service %>) - service id already registered', async (t) => {
+  const { User, user } = t.context
+  await user.set({ services: { <%= service %>: serviceUser.id } }).save()
+  const updatedUser = await User.createFromService({ ...serviceUser, service: '<%= service %>' })
+  t.true(updatedUser.id === user.id)
+  t.true(updatedUser.services.<%= service %> === serviceUser.id)
+  t.true(updatedUser.name === serviceUser.name)
+  t.true(updatedUser.email === user.email)
+  t.true(updatedUser.picture === serviceUser.picture)
+})
+
+test('createFromService (<%= service %>) - new user', async (t) => {
+  const { User, user } = t.context
+  const createdUser = await User.createFromService({ ...serviceUser, service: '<%= service %>' })
+  t.true(createdUser.id !== user.id)
+  t.true(createdUser.services.<%= service %> === '123')
+  t.true(createdUser.name === serviceUser.name)
+  t.true(createdUser.email === serviceUser.email)
+  t.true(createdUser.picture === serviceUser.picture)
+})
+<%_ }) _%>
