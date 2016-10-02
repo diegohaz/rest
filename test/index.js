@@ -41,7 +41,7 @@ function install(answers, done, generateApis) {
 
       promise.then(function (dir) {
         console.log('Copying node_modules folder...');
-        fs.copySync(path.join(__dirname, '../node_modules'), path.join(dir, 'node_modules'));
+        fs.ensureSymlinkSync(path.join(__dirname, '../node_modules'), path.join(dir, 'node_modules'));
         spawnCommand('npm', ['run', 'lint']).on('exit', function (err) {
           if (err) {
             return done(err);
@@ -160,7 +160,7 @@ describe('generator-rest', function () {
         https: true,
         passwordReset: true,
         sendgridKey: 'sendgridKey'
-      }, done, true);
+      }, done);
     });
     it('should install and pass tests', function () {});
   });
