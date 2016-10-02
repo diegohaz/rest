@@ -117,6 +117,7 @@ test.serial('POST /auth 401 (master) - missing auth', async (t) => {
 
 test.serial('POST /auth/<%= service %> 201', async (t) => {
   stub(<%= service %>, 'getMe', () => Promise.resolve({
+    service: '<%= service %>',
     id: '123',
     name: 'user',
     email: 'b@b.com',
