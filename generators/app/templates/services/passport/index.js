@@ -1,20 +1,17 @@
 import passport from 'passport'
-<%_ if (authMethods.indexOf('email') !== -1) { _%>
+<%_ if (passwordSignup) { _%>
 import { Schema } from 'bodymen'
 import { BasicStrategy } from 'passport-http'
 <%_ } _%>
 import { Strategy as BearerStrategy } from 'passport-http-bearer'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { jwtSecret, masterKey } from '../../config'
-<%_ if (authMethods.indexOf('facebook') !== -1) { _%>
-import * as facebookService from '../facebook'
-<%_ } _%>
-<%_ if (authMethods.indexOf('github') !== -1) { _%>
-import * as githubService from '../github'
-<%_ } _%>
-import User<% if (authMethods.indexOf('email') !== -1) { %>, { schema }<% } %> from '../../<%= apiDir %>/user/user.model'
+<%_ authServices.forEach(function (service) { _%>
+import * as <%= service %>Service from '../<%= service %>'
+<%_ }) _%>
+import User<% if (passwordSignup) { %>, { schema }<% } %> from '../../<%= apiDir %>/user/user.model'
 
-<%_ if (authMethods.indexOf('email') !== -1) { _%>
+<%_ if (passwordSignup) { _%>
 export const basic = () => (req, res, next) =>
   passport.authenticate('basic', { session: false }, (err, user, info) => {
     if (err && err.param) {
@@ -28,14 +25,11 @@ export const basic = () => (req, res, next) =>
     })
   })(req, res, next)
 <%_ } _%>
-<%_ if (authMethods.indexOf('facebook') !== -1) { _%>
-export const facebook = () =>
-  passport.authenticate('facebook', { session: false })
-<%_ } _%>
-<%_ if (authMethods.indexOf('github') !== -1) { _%>
-export const github = () =>
-  passport.authenticate('github', { session: false })
-<%_ } _%>
+<%_ authServices.forEach(function (service) { _%>
+export const <%= service %> = () =>
+  passport.authenticate('<%= service %>', { session: false })
+
+<%_ }) _%>
 export const master = () =>
   passport.authenticate('master', { session: false })
 
@@ -50,7 +44,7 @@ export const session = ({ required, roles = User.roles } = {}) => (req, res, nex
     })
   })(req, res, next)
 
-<%_ if (authMethods.indexOf('email') !== -1) { _%>
+<%_ if (passwordSignup) { _%>
 passport.use('basic', new BasicStrategy((email, password, done) => {
   const userSchema = new Schema({ email: schema.tree.email, password: schema.tree.password })
 
@@ -71,9 +65,9 @@ passport.use('basic', new BasicStrategy((email, password, done) => {
 }))
 
 <%_ } _%>
-<%_ if (authMethods.indexOf('facebook') !== -1) { _%>
-passport.use('facebook', new BearerStrategy((sessionToken, done) => {
-  facebookService.getMe({ sessionToken, fields: 'id, name, email, picture' }).then((user) => {
+<%_ authServices.forEach(function (service) { _%>
+passport.use('<%= service %>', new BearerStrategy((sessionToken, done) => {
+  <%= service %>Service.getMe({ sessionToken }).then((user) => {
     return User.createFromService(user)
   }).then((user) => {
     done(null, user)
@@ -81,18 +75,7 @@ passport.use('facebook', new BearerStrategy((sessionToken, done) => {
   }).catch(done)
 }))
 
-<%_ } _%>
-<%_ if (authMethods.indexOf('github') !== -1) { _%>
-passport.use('github', new BearerStrategy((sessionToken, done) => {
-  githubService.getMe({ sessionToken, fields: 'id, name, email, picture' }).then((user) => {
-    return User.createFromService(user)
-  }).then((user) => {
-    done(null, user)
-    return null
-  }).catch(done)
-}))
-
-<%_ } _%>
+<%_ }) _%>
 passport.use('master', new BearerStrategy((token, done) => {
   if (token === masterKey) {
     done(null, {})

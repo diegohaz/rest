@@ -1,4 +1,3 @@
-<%_ var emailSignup = authMethods.indexOf('email') !== -1 _%>
 import test from 'ava'
 import request from 'supertest-as-promised'
 import mockgoose from 'mockgoose'
@@ -164,7 +163,7 @@ test.serial('POST /users 400 (master) - missing email', async (t) => {
   t.true(body.param === 'email')
 })
 
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 test.serial('POST /users 400 (master) - invalid password', async (t) => {
   const { status, body } = await request(app())
     .post('/')
@@ -287,7 +286,7 @@ test.serial('PUT /users/:id 404 (admin)', async (t) => {
   t.true(status === 404)
 })
 
-<%_ if (emailSignup) { _%>
+<%_ if (passwordSignup) { _%>
 const passwordMatch = async (password, userId) => {
   const user = await User.findById(userId)
   return !!await user.authenticate(password)

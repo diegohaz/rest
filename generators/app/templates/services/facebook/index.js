@@ -1,12 +1,12 @@
 import request from 'request-promise'
 
-export const getMe = ({ accessToken, fields }) =>
+export const getMe = ({ accessToken }) =>
   request({
     uri: 'https://graph.facebook.com/me',
     json: true,
     qs: {
       access_token: accessToken,
-      fields
+      fields: 'id, name, email, picture'
     }
   }).then(({ id, name, email, picture }) => ({
     service: 'facebook',
