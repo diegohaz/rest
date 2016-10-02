@@ -18,7 +18,7 @@ const emailRequest = (accessToken) => request({
 })
 
 export const getMe = ({ accessToken }) =>
-    bluebird.all([userRequest, emailRequest])
+    bluebird.all([userRequest(accessToken), emailRequest(accessToken)])
         .spread((responseOfUserReq, responseOfEmailReq) => ({
             service: "github",
             id: responseOfUserReq.id,

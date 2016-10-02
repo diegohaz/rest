@@ -5,7 +5,7 @@ var fs = require('fs-extra');
 var spawnCommand = require('yeoman-generator/lib/actions/spawn_command').spawnCommand;
 var helpers = require('yeoman-test');
 
-var authServices = ['facebook'];
+var authServices = ['facebook', 'github'];
 
 function install(answers, done, generateApis) {
   return helpers.run(path.join(__dirname, '../generators/app'))
