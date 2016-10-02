@@ -48,7 +48,7 @@ module.exports = yeoman.Base.extend({
       choices: [
         'password',
         'facebook',
-		'github'
+		    'github'
         {name: 'google', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/7)'},
         {name: 'twitter', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/8)'},
       ],
