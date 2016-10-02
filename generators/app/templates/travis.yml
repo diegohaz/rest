@@ -10,6 +10,8 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
+script:
+  - npm test -- --serial
 env:
   global:
   - CXX=g++-4.8
