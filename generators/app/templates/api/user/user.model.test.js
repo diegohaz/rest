@@ -56,7 +56,7 @@ test('authenticate', async (t) => {
 test('createFromService', async (t) => {
   const { User, user } = t.context
   const serviceUser = {
-    service: 'facebook',
+    service: '<%= authServices[0] %>',
     id: '123',
     name: 'Test Name',
     email: 'test@test.com',
@@ -65,21 +65,21 @@ test('createFromService', async (t) => {
 
   const updatedUser = await User.createFromService({ ...serviceUser, email: 'a@a.com' })
   t.true(updatedUser.id === user.id)
-  t.true(updatedUser.services.facebook === serviceUser.id)
+  t.true(updatedUser.services.<%= authServices[0] %> === serviceUser.id)
   t.true(updatedUser.name === serviceUser.name)
   t.true(updatedUser.email === user.email)
   t.true(updatedUser.picture === serviceUser.picture)
 
   const updatedFbUser = await User.createFromService(serviceUser)
   t.true(updatedFbUser.id === user.id)
-  t.true(updatedFbUser.services.facebook === serviceUser.id)
+  t.true(updatedFbUser.services.<%= authServices[0] %> === serviceUser.id)
   t.true(updatedFbUser.name === serviceUser.name)
   t.true(updatedFbUser.email === user.email)
   t.true(updatedFbUser.picture === serviceUser.picture)
 
   const createdFbUser = await User.createFromService({ ...serviceUser, id: '321' })
   t.true(createdFbUser.id !== user.id)
-  t.true(createdFbUser.services.facebook === '321')
+  t.true(createdFbUser.services.<%= authServices[0] %> === '321')
   t.true(createdFbUser.name === serviceUser.name)
   t.true(createdFbUser.email === serviceUser.email)
   t.true(createdFbUser.picture === serviceUser.picture)
