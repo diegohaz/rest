@@ -66,16 +66,6 @@ test.serial('POST /auth 400 (master) - invalid password', async (t) => {
   t.true(body.param === 'password')
 })
 
-test.serial('POST /auth 400 (master) - invalid password', async (t) => {
-  const { status, body } = await request(app())
-    .post('/')
-    .query({ access_token: masterKey })
-    .auth('a@a.com', '123')
-  t.true(status === 400)
-  t.true(typeof body === 'object')
-  t.true(body.param === 'password')
-})
-
 test.serial('POST /auth 401 (master) - user does not exist', async (t) => {
   const { status } = await request(app())
     .post('/')
