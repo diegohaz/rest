@@ -1,7 +1,7 @@
 {
   "name": "generator-rest",
   "version": "0.6.0",
-  "description": "RESTful API generator using NodeJS, Express and Mongoose",
+  "description": "RESTful API generator using NodeJS, Express and MongoDB (Mongoose). Watch https://youtu.be/6x-ijyG-ack",
   "homepage": "https://github.com/diegohaz/generator-rest",
   "author": {
     "name": "Diego Haz",
