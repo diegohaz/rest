@@ -19,8 +19,8 @@ methods = httpVerbs.filter(function (verb) {
     if (verb.master && authMiddlewares.indexOf('master') === -1) {
       authMiddlewares.push('master');
     }
-    if ((verb.admin || verb.user) && authMiddlewares.indexOf('session') === -1) {
-      authMiddlewares.push('session');
+    if ((verb.admin || verb.user) && authMiddlewares.indexOf('token') === -1) {
+      authMiddlewares.push('token');
     }
   }
   return true
@@ -94,7 +94,7 @@ router.<%= method.router %>('/<%= ['GET ONE', 'PUT', 'DELETE'].indexOf(method.me
   master(),
   <%_ } _%>
   <%_ if (method.admin || method.user) { _%>
-  session({ required: true<% if (method.admin) { %>, roles: ['admin']<% } %> }),
+  token({ required: true<% if (method.admin) { %>, roles: ['admin']<% } %> }),
   <%_ } _%>
   <%_ if (method.method === 'GET LIST') { _%>
   query(),
