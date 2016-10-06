@@ -11,7 +11,7 @@
     "coverage": "nyc report -r lcov && opn coverage/lcov-report/index.html",
     "dev": "nodemon -i '*.test.js' .",
     "prod": "npm run build && nodemon -i '*.test.js' -r dotenv-safe/config dist",
-    "lint": "eslint <%= srcDir %>/**/*.js",
+    "lint": "eslint '<%= srcDir %>/**/*.js'",
     "clean": "del 'dist/!(.git*|Procfile)**'",
     "copy": "copy package.json dist && copy <%= srcDir %>/**/package.json dist/<%= srcDir %>",
     "transpile": "babel <%= srcDir %> -d dist/<%= srcDir %> -s inline -i '<%= srcDir %>/**/*.test.js'",

@@ -66,16 +66,6 @@ test.serial('POST /auth 400 (master) - invalid password', async (t) => {
   t.true(body.param === 'password')
 })
 
-test.serial('POST /auth 400 (master) - invalid password', async (t) => {
-  const { status, body } = await request(app())
-    .post('/')
-    .query({ access_token: masterKey })
-    .auth('a@a.com', '123')
-  t.true(status === 400)
-  t.true(typeof body === 'object')
-  t.true(body.param === 'password')
-})
-
 test.serial('POST /auth 401 (master) - user does not exist', async (t) => {
   const { status } = await request(app())
     .post('/')
@@ -109,7 +99,7 @@ test.serial('POST /auth 401 (master) - missing auth', async (t) => {
 <%_ authServices.forEach(function(service) { _%>
 
 test.serial('POST /auth/<%= service %> 201', async (t) => {
-  stub(<%= service %>, 'getMe', () => Promise.resolve({
+  stub(<%= service %>, 'getUser', () => Promise.resolve({
     service: '<%= service %>',
     id: '123',
     name: 'user',

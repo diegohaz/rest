@@ -39,9 +39,9 @@ const userSchema = new Schema({
   },
   <%_ if (authServices.length) { _%>
   services: {
-    <%- authServices.map(function(service) {
-      return service + ': String'
-    }).join(',\n') %>
+    <%_ authServices.forEach(function (service, i) { _%>
+    <%= service %>: String<%- i !== authServices.length - 1 ? ',' : '' %>
+    <%_ }) _%>
   },
   <%_ } _%>
   role: {

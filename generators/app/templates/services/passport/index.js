@@ -66,8 +66,8 @@ passport.use('basic', new BasicStrategy((email, password, done) => {
 
 <%_ } _%>
 <%_ authServices.forEach(function (service) { _%>
-passport.use('<%= service %>', new BearerStrategy((sessionToken, done) => {
-  <%= service %>Service.getMe({ sessionToken }).then((user) => {
+passport.use('<%= service %>', new BearerStrategy((token, done) => {
+  <%= service %>Service.getUser(token).then((user) => {
     return User.createFromService(user)
   }).then((user) => {
     done(null, user)
