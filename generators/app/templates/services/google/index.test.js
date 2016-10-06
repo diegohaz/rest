@@ -5,12 +5,12 @@ import * as google from '.'
 test('getUser', async (t) => {
   const ggUser = {
     id: '123',
-	email: 'email@example.com',
+    email: 'email@example.com',
     verified_email: true,
     name: 'Test name',
-	given_name: 'Test',
-	family_name: 'Name',
-	link: 'https://plus.google.com/123',
+    given_name: 'Test',
+    family_name: 'Name',
+    link: 'https://plus.google.com/123',
     picture: 'test.jpg'
   }
 
