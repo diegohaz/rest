@@ -24,6 +24,7 @@ export const password = () => (req, res, next) =>
       next()
     })
   })(req, res, next)
+
 <%_ } _%>
 <%_ authServices.forEach(function (service) { _%>
 export const <%= service %> = () =>
