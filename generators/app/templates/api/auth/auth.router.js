@@ -1,7 +1,7 @@
 <%_
 var passport = [];
 if (passwordSignup) {
-  passport.push('basic', 'master');
+  passport.push('password', 'master');
 }
 if (authServices.length) {
   passport.push.apply(passport, authServices)
@@ -29,7 +29,7 @@ const router = new Router()
  */
 router.post('/',
   master(),
-  basic(),
+  password(),
   login)
 
 <%_ } _%>
