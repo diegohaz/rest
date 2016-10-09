@@ -99,7 +99,7 @@ test.serial('POST /auth 401 (master) - missing auth', async (t) => {
 <%_ authServices.forEach(function(service) { _%>
 
 test.serial('POST /auth/<%= service %> 201', async (t) => {
-  stub(<%= service %>, 'getMe', () => Promise.resolve({
+  stub(<%= service %>, 'getUser', () => Promise.resolve({
     service: '<%= service %>',
     id: '123',
     name: 'user',

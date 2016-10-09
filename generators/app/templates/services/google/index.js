@@ -2,15 +2,14 @@ import request from 'request-promise'
 
 export const getUser = (accessToken) =>
   request({
-    uri: 'https://graph.facebook.com/me',
+    uri: 'https://www.googleapis.com/userinfo/v2/me',
     json: true,
     qs: {
-      access_token: accessToken,
-      fields: 'id, name, email, picture'
+      access_token: accessToken
     }
   }).then(({ id, name, email, picture }) => ({
-    service: 'facebook',
-    picture: picture.data.url,
+    service: 'google',
+    picture,
     id,
     name,
     email

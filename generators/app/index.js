@@ -49,7 +49,7 @@ module.exports = yeoman.Base.extend({
         'password',
         'facebook',
         'github',
-        {name: 'google', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/7)'},
+        'google',
         {name: 'twitter', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/8)'}
       ],
       when: function (props) {
