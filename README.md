@@ -3,7 +3,7 @@
 
 [Watch this video](https://www.youtube.com/watch?v=6x-ijyG-ack) for an overview on how to use **generator-rest** and deploy your project to [Heroku](https://heroku.com).
 
-[Here](https://github.com/diegohaz/generator-rest-example)'s a full commented example of the generated project. Take a look if you want to learn more about the generated code.
+[Here](https://github.com/diegohaz/generator-rest-example)'s a fully commented example of the generated project. Take a look if you want to learn more about the generated code.
 
 ## Features
 
@@ -17,7 +17,7 @@
  - **Query string validator** - Using [querymen](https://github.com/diegohaz/querymen)
  - **Request body validator** - Using [bodymen](https://github.com/diegohaz/bodymen)
  - **Standard error responses** - Using [querymen](https://github.com/diegohaz/querymen) and [bodymen](https://github.com/diegohaz/bodymen) error handlers
- - **Unit and integration tests** - Using [AVA](https://github.com/avajs/ava)
+ - **Unit and integration tests** - Using [Jest](https://github.com/facebook/jest)
  - **Continuous integration support** - Using [Travis CI](https://travis-ci.org/)
  - **API docs generator** - Using [apidoc](http://apidocjs.com/)
  - **Love ♥** - Using [me](https://github.com/diegohaz)
@@ -45,20 +45,25 @@ yo rest:api # generate a new api endpoint inside your project
 After you generate your project, these commands are available in `package.json`.
 
 ```bash
-npm test # test using AVA
+npm test # test using Jest
 npm run test:unit # run unit tests
 npm run test:integration # run integration tests
-npm run coverage # open the last test coverage report on the browser
+npm run coverage # test and open the coverage report in the browser
 npm run lint # lint using ESLint
 npm run dev # run the API in development mode
 npm run prod # run the API in production mode
-npm run build # build the project into dist folder
 npm run docs # generate API docs
 ```
 
 ## Playing locally
 
-First, run the server in development mode.
+First, you will need to install and run [MongoDB](https://www.mongodb.com/) in another terminal instance.
+
+```bash
+$ mongod
+```
+
+Then, run the server in development mode.
 
 ```bash
 $ npm run dev
@@ -129,15 +134,9 @@ HTTP/1.1 201 Created
 
 ## Deploy
 
-You can easily build your project by executing `npm run build`. It will put the build files in `./dist` so you can deploy its content anywhere.
-
 Here is an example on how to deploy to [Heroku](https://heroku.com) using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command-line):
 ```bash
-# build files and change directory to ./dist
-npm run build
-cd dist
-
-# start a new local git repository inside there
+# start a new local git repository
 git init
 
 # create a new heroku app
@@ -152,9 +151,9 @@ heroku addons:create mongolab
 # set the environment variables to the heroku app (see the .env file in root directory)
 heroku config:set MASTER_KEY=masterKey JWT_SECRET=jwtSecret
 
-# commit and push the build files
+# commit and push the files
 git add -A
-git commit -m "Some commit message"
+git commit -m "Initial commit"
 git push heroku master
 
 # open the deployed app in the browser
@@ -164,12 +163,9 @@ heroku open
 The second time you deploy, you just need to:
 
 ```bash
-npm run build
-cd dist
 git add -A
-git commit -m "Some commit message"
+git commit -m "Update code"
 git push heroku master
-heroku open
 ```
 
 ## Directory structure
