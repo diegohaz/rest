@@ -1,7 +1,7 @@
 {
   "name": "generator-rest",
   "version": "0.7.0",
-  "description": "RESTful API generator using NodeJS, Express and MongoDB (Mongoose). Watch https://youtu.be/6x-ijyG-ack",
+  "description": "RESTful API generator using NodeJS, Express and MongoDB. Watch https://youtu.be/6x-ijyG-ack",
   "homepage": "https://github.com/diegohaz/generator-rest",
   "author": {
     "name": "Diego Haz",
@@ -42,9 +42,6 @@
     "yosay": "^1.0.0"
   },
   "devDependencies": {
-    "apidoc": "^0.16.1",
-    "apidoc-markdown": "^0.2.0",
-    "babel-cli": "^6.14.0",
     "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",
     "babel-jest": "^16.0.0",
@@ -57,9 +54,7 @@
     "body-parser": "^1.15.1",
     "bodymen": "^1.0.1",
     "compression": "^1.6.2",
-    "copy": "^0.3.0",
     "cors": "^2.7.1",
-    "del-cli": "^0.2.0",
     "dotenv-safe": "^2.3.1",
     "eslint": "^3.1.1",
     "eslint-config-standard": "^6.0.0",
@@ -87,7 +82,6 @@
     "morgan": "^1.7.0",
     "nock": "^8.0.0",
     "nodemon": "^1.10.2",
-    "opn-cli": "^3.1.0",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
