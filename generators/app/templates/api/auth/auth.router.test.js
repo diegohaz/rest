@@ -27,11 +27,11 @@ test('POST /auth 201 (master)', async () => {
     .post('/')
     .query({ access_token: masterKey })
     .auth('a@a.com', '123456')
-  expect(status).toEqual(201)
-  expect(typeof body).toEqual('object')
-  expect(typeof body.token).toEqual('string')
-  expect(typeof body.user).toEqual('object')
-  expect(body.user.id).toEqual(user.id)
+  expect(status).toBe(201)
+  expect(typeof body).toBe('object')
+  expect(typeof body.token).toBe('string')
+  expect(typeof body.user).toBe('object')
+  expect(body.user.id).toBe(user.id)
   expect(await verify(body.token)).toBeTruthy()
 })
 
@@ -40,9 +40,9 @@ test('POST /auth 400 (master) - invalid email', async () => {
     .post('/')
     .query({ access_token: masterKey })
     .auth('invalid', '123456')
-  expect(status).toEqual(400)
-  expect(typeof body).toEqual('object')
-  expect(body.param).toEqual('email')
+  expect(status).toBe(400)
+  expect(typeof body).toBe('object')
+  expect(body.param).toBe('email')
 })
 
 test('POST /auth 400 (master) - invalid password', async () => {
@@ -50,9 +50,9 @@ test('POST /auth 400 (master) - invalid password', async () => {
     .post('/')
     .query({ access_token: masterKey })
     .auth('a@a.com', '123')
-  expect(status).toEqual(400)
-  expect(typeof body).toEqual('object')
-  expect(body.param).toEqual('password')
+  expect(status).toBe(400)
+  expect(typeof body).toBe('object')
+  expect(body.param).toBe('password')
 })
 
 test('POST /auth 401 (master) - user does not exist', async () => {
@@ -60,7 +60,7 @@ test('POST /auth 401 (master) - user does not exist', async () => {
     .post('/')
     .query({ access_token: masterKey })
     .auth('b@b.com', '123456')
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 
 test('POST /auth 401 (master) - wrong password', async () => {
@@ -68,21 +68,21 @@ test('POST /auth 401 (master) - wrong password', async () => {
     .post('/')
     .query({ access_token: masterKey })
     .auth('a@a.com', '654321')
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 
 test('POST /auth 401 (master) - missing access_token', async () => {
   const { status } = await request(app())
     .post('/')
     .auth('a@a.com', '123456')
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 
 test('POST /auth 401 (master) - missing auth', async () => {
   const { status } = await request(app())
     .post('/')
     .query({ access_token: masterKey })
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 <%_ } _%>
 <%_ authServices.forEach(function(service) { _%>
@@ -98,16 +98,16 @@ test('POST /auth/<%= service %> 201', async () => {
   const { status, body } = await request(app())
     .post('/<%= service %>')
     .send({ access_token: '123' })
-  expect(status).toEqual(201)
-  expect(typeof body).toEqual('object')
-  expect(typeof body.token).toEqual('string')
-  expect(typeof body.user).toEqual('object')
+  expect(status).toBe(201)
+  expect(typeof body).toBe('object')
+  expect(typeof body.token).toBe('string')
+  expect(typeof body.user).toBe('object')
   expect(await verify(body.token)).toBeTruthy()
 })
 
 test('POST /auth/<%= service %> 401 - missing token', async () => {
   const { status } = await request(app())
     .post('/<%= service %>')
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 <%_ }) _%>

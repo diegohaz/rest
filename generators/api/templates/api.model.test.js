@@ -25,14 +25,14 @@ beforeEach(async () => {
 describe('view', () => {
   it('returns simple view', () => {
     const view = <%= camel %>.view()
-    expect(typeof view).toEqual('object')
-    expect(view.id).toEqual(<%= camel %>.id)
+    expect(typeof view).toBe('object')
+    expect(view.id).toBe(<%= camel %>.id)
     <%_ if (storeUser) { _%>
-    expect(typeof view.<%= userField %>).toEqual('object')
-    expect(view.<%= userField %>.id).toEqual(user.id)
+    expect(typeof view.<%= userField %>).toBe('object')
+    expect(view.<%= userField %>.id).toBe(user.id)
     <%_ } _%>
     <%_ modelFields.forEach(function (field) { _%>
-    expect(view.<%= field %>).toEqual(<%= camel %>.<%= field %>)
+    expect(view.<%= field %>).toBe(<%= camel %>.<%= field %>)
     <%_ }) _%>
     expect(view.createdAt).toBeTruthy()
     expect(view.updatedAt).toBeTruthy()
@@ -40,14 +40,14 @@ describe('view', () => {
 
   it('returns full view', () => {
     const view = <%= camel %>.view(true)
-    expect(typeof view).toEqual('object')
-    expect(view.id).toEqual(<%= camel %>.id)
+    expect(typeof view).toBe('object')
+    expect(view.id).toBe(<%= camel %>.id)
     <%_ if (storeUser) { _%>
-    expect(typeof view.<%= userField %>).toEqual('object')
-    expect(view.<%= userField %>.id).toEqual(user.id)
+    expect(typeof view.<%= userField %>).toBe('object')
+    expect(view.<%= userField %>.id).toBe(user.id)
     <%_ } _%>
     <%_ modelFields.forEach(function (field) { _%>
-    expect(view.<%= field %>).toEqual(<%= camel %>.<%= field %>)
+    expect(view.<%= field %>).toBe(<%= camel %>.<%= field %>)
     <%_ }) _%>
     expect(view.createdAt).toBeTruthy()
     expect(view.updatedAt).toBeTruthy()

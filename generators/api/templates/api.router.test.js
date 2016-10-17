@@ -111,7 +111,7 @@ test('<%= verb %> <%= link %> <%= successCode %><%= permission %>', async () => 
     <%_ if (params.length) { _%>
     .<%= queryOrSend %>({ <%- params.join(', ') %> })
     <%_ } _%>
-  expect(status).toEqual(<%= successCode %>)
+  expect(status).toBe(<%= successCode %>)
   <%_ if (method.method !== 'DELETE') { _%>
   expect(<%- check[0] %>).<%- check[1] %>(<%- check[2] %>)
   <%_ additionalChecks.forEach(function (check) { _%>
@@ -129,7 +129,7 @@ test('<%= verb %> <%= link %> 401 (user) - another user', async () => {
   const { status } = await request(app())
     .<%= method.router %>(<%- request %>)
     .send({ <%- parameters.join(', ') %> })
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 <%_ } _%>
 <%_ if (hasSession && method.master) { _%>
@@ -138,7 +138,7 @@ test('<%= verb %> <%= link %> 401 (admin)', async () => {
   const { status } = await request(app())
     .<%= method.router %>(<%- request %>)
     .<%= queryOrSend %>({ access_token: adminSession })
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 <%_ } _%>
 <%_ if (hasSession && (method.master || method.admin)) { _%>
@@ -147,7 +147,7 @@ test('<%= verb %> <%= link %> 401 (user)', async () => {
   const { status } = await request(app())
     .<%= method.router %>(<%- request %>)
     .<%= queryOrSend %>({ access_token: userSession })
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 <%_ } _%>
 <%_ if (method.permission) { _%>
@@ -155,7 +155,7 @@ test('<%= verb %> <%= link %> 401 (user)', async () => {
 test('<%= verb %> <%= link %> 401', async () => {
   const { status } = await request(app())
     .<%= method.router %>(<%- request %>)
-  expect(status).toEqual(401)
+  expect(status).toBe(401)
 })
 <%_ } _%>
 <%_ if (['GET ONE', 'PUT', 'DELETE'].indexOf(method.method) !== -1) { _%>
@@ -166,7 +166,7 @@ test('<%= verb %> <%= link %> 404<%= permission %>', async () => {
     <%_ if (params.length) { _%>
     .<%= queryOrSend %>({ <%- params.join(', ') %> })
     <%_ } _%>
-  expect(status).toEqual(404)
+  expect(status).toBe(404)
 })
 <%_ } _%>
 <%_ }) _%>

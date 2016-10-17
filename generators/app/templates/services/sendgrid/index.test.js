@@ -13,5 +13,5 @@ it('sends mail', async () => {
     content: '<h1>Just Testing</h1>'
   })
 
-  expect(response.statusCode).toEqual(202)
+  expect(response.statusCode).toBe(202)
 })

@@ -11,13 +11,13 @@ beforeEach(async () => {
 describe('view', () => {
   it('returns simple view', () => {
     const view = passwordReset.view()
-    expect(view.token).toEqual(passwordReset.token)
-    expect(typeof view.user).toEqual('object')
+    expect(view.token).toBe(passwordReset.token)
+    expect(typeof view.user).toBe('object')
   })
 
   it('returns full view', () => {
     const view = passwordReset.view(true)
-    expect(view.token).toEqual(passwordReset.token)
+    expect(view.token).toBe(passwordReset.token)
     expect(view.user).toEqual(passwordReset.user.view(true))
   })
 })
