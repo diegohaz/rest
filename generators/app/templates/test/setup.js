@@ -1,11 +1,11 @@
+import { EventEmitter } from 'events'
 import mockgoose from 'mockgoose'
 import mongoose from '../<%= srcDir %>/config/mongoose'
 import { mongo } from '../<%= srcDir %>/config'
 
-require('events').EventEmitter.defaultMaxListeners = Infinity
+EventEmitter.defaultMaxListeners = Infinity
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
 
-// lodash
 global.Array = Array
 global.Date = Date
 global.Function = Function
