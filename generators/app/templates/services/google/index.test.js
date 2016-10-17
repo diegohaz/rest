@@ -1,8 +1,7 @@
-import test from 'ava'
 import nock from 'nock'
 import * as google from '.'
 
-test('getUser', async (t) => {
+it('parses google user', async () => {
   const ggUser = {
     id: '123',
     email: 'email@example.com',
@@ -17,9 +16,9 @@ test('getUser', async (t) => {
   nock('https://www.googleapis.com/userinfo/v2').get('/me').query(true).reply(200, ggUser)
 
   const data = await google.getUser('123')
-  t.true(data.service === 'google')
-  t.true(data.id === ggUser.id)
-  t.true(data.name === ggUser.name)
-  t.true(data.email === ggUser.email)
-  t.true(data.picture === ggUser.picture)
+  expect(data.service).toEqual('google')
+  expect(data.id).toEqual(ggUser.id)
+  expect(data.name).toEqual(ggUser.name)
+  expect(data.email).toEqual(ggUser.email)
+  expect(data.picture).toEqual(ggUser.picture)
 })

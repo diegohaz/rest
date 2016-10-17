@@ -46,8 +46,8 @@ function install(answers, done, generateApis) {
           if (err) {
             return done(err);
           }
-          if (process.env.TRAVIS) {
-            spawnCommand('npm', ['test', '--', '--serial']).on('exit', done);
+          if (process.env.CI) {
+            spawnCommand('npm', ['test', '--', '-i', '--coverage']).on('exit', done);
           } else {
             spawnCommand('npm', ['test']).on('exit', done);
           }

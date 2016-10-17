@@ -1,83 +1,83 @@
-import test from 'ava'
-import { spy } from 'sinon'
 import * as response from '.'
 
-test.beforeEach((t) => {
-  const res = {
-    status () { return this },
-    json () { return this },
-    end () { return this }
+let res
+
+beforeEach(() => {
+  res = {
+    status: jest.fn(() => res),
+    json: jest.fn(() => res),
+    end: jest.fn(() => res)
   }
-  const user = {
-    id: 1,
-    role: 'user'
-  }
-  const entity = {
-    author: {
+})
+
+describe('success', () => {
+  it('responds with passed object and status 200', () => {
+    expect(response.success(res)({ prop: 'value' })).toBeNull()
+    expect(res.status).toBeCalledWith(200)
+    expect(res.json).toBeCalledWith({ prop: 'value' })
+  })
+
+  it('responds with passed object and status 201', () => {
+    expect(response.success(res, 201)({ prop: 'value' })).toBeNull()
+    expect(res.status).toBeCalledWith(201)
+    expect(res.json).toBeCalledWith({ prop: 'value' })
+  })
+
+  it('does not send any response when object has not been passed', () => {
+    expect(response.success(res, 201)()).toBeNull()
+    expect(res.status).not.toBeCalled()
+  })
+})
+
+describe('notFound', () => {
+  it('responds with status 404 when object has not been passed', () => {
+    expect(response.notFound(res)()).toBeNull()
+    expect(res.status).toBeCalledWith(404)
+    expect(res.end).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns the passed object and does not send any response', () => {
+    expect(response.notFound(res)({ prop: 'value' })).toEqual({ prop: 'value' })
+    expect(res.status).not.toBeCalled()
+    expect(res.end).not.toBeCalled()
+  })
+})
+
+describe('authorOrAdmin', () => {
+  let user, entity
+
+  beforeEach(() => {
+    user = {
       id: 1,
-      equals (id) {
-        return id === this.id
+      role: 'user'
+    }
+    entity = {
+      author: {
+        id: 1,
+        equals (id) {
+          return id === this.id
+        }
       }
     }
-  }
-  spy(res, 'status')
-  spy(res, 'json')
-  spy(res, 'end')
-  t.context = { res, user, entity }
-})
+  })
 
-test('success 200', (t) => {
-  const { res } = t.context
-  t.falsy(response.success(res)({ prop: 'value' }))
-  t.true(res.status.calledWith(200))
-  t.true(res.json.calledWith({ prop: 'value' }))
-})
+  it('returns the passed entity when author is the same', () => {
+    expect(response.authorOrAdmin(res, user, 'author')(entity)).toEqual(entity)
+  })
 
-test('success 201', (t) => {
-  const { res } = t.context
-  t.falsy(response.success(res, 201)({ prop: 'value' }))
-  t.true(res.status.calledWith(201))
-  t.true(res.json.calledWith({ prop: 'value' }))
-})
+  it('returns the passed entity when author is admin', () => {
+    user.role = 'admin'
+    expect(response.authorOrAdmin(res, user, 'user')(entity)).toEqual(entity)
+  })
 
-test('success null', (t) => {
-  const { res } = t.context
-  t.falsy(response.success(res, 201)())
-  t.true(res.status.notCalled)
-})
+  it('responds with status 401 when author is not the same or admin', () => {
+    user.id = 2
+    expect(response.authorOrAdmin(res, user, 'author')(entity)).toBeNull()
+    expect(res.status).toBeCalledWith(401)
+    expect(res.end).toHaveBeenCalledTimes(1)
+  })
 
-test('notFound', (t) => {
-  const { res } = t.context
-  t.falsy(response.notFound(res)())
-  t.true(res.status.calledWith(404))
-  t.true(res.end.calledOnce)
-})
-
-test('notFound found', (t) => {
-  const { res } = t.context
-  t.truthy(response.notFound(res)({ prop: 'value' }))
-  t.true(res.status.notCalled)
-  t.true(res.end.notCalled)
-})
-
-test('authorOrAdmin author', (t) => {
-  const { res, user, entity } = t.context
-  t.truthy(response.authorOrAdmin(res, user, 'author')(entity))
-})
-
-test('authorOrAdmin admin', (t) => {
-  const { res, user, entity } = t.context
-  user.role = 'admin'
-  t.truthy(response.authorOrAdmin(res, user, 'user')(entity))
-})
-
-test('authorOrAdmin not author nor admin', (t) => {
-  const { res, user, entity } = t.context
-  user.id = 2
-  t.falsy(response.authorOrAdmin(res, user, 'author')(entity))
-})
-
-test('authorOrAdmin no entity', (t) => {
-  const { res, user } = t.context
-  t.falsy(response.authorOrAdmin(res, user, 'author')())
+  it('returns null without sending response when entity has not been passed', () => {
+    expect(response.authorOrAdmin(res, user, 'author')()).toBeNull()
+  })
 })

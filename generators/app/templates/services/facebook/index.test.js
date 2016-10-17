@@ -1,8 +1,7 @@
-import test from 'ava'
 import nock from 'nock'
 import * as facebook from '.'
 
-test('getUser', async (t) => {
+it('parses facebook user', async () => {
   const fbUser = {
     id: '123',
     name: 'Test name',
@@ -13,9 +12,9 @@ test('getUser', async (t) => {
   nock('https://graph.facebook.com').get('/me').query(true).reply(200, fbUser)
 
   const data = await facebook.getUser('123')
-  t.true(data.service === 'facebook')
-  t.true(data.id === fbUser.id)
-  t.true(data.name === fbUser.name)
-  t.true(data.email === fbUser.email)
-  t.true(data.picture === fbUser.picture.data.url)
+  expect(data.service).toEqual('facebook')
+  expect(data.id).toEqual(fbUser.id)
+  expect(data.name).toEqual(fbUser.name)
+  expect(data.email).toEqual(fbUser.email)
+  expect(data.picture).toEqual(fbUser.picture.data.url)
 })

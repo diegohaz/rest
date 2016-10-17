@@ -1,9 +1,5 @@
-import test from 'ava'
-import Promise from 'bluebird'
 import request from 'supertest-as-promised'
 import nock from 'nock'
-import mockgoose from 'mockgoose'
-import mongoose from '../../config/mongoose'
 import express from '../../config/express'
 import { masterKey } from '../../config'
 import { User } from '../user'
@@ -11,96 +7,81 @@ import routes, { PasswordReset } from '.'
 
 const app = () => express(routes)
 
-test.before(async (t) => {
-  await mockgoose(mongoose)
-  await mongoose.connect('')
-})
+let user, passwordReset
 
-test.beforeEach(async (t) => {
-  const user = await User.create({ name: 'user', email: 'a@a.com', password: '123456' })
-  const passwordReset = await PasswordReset.create({ user })
-  t.context = { ...t.context, user, passwordReset }
-})
-
-test.afterEach.always(async (t) => {
-  await Promise.all([User.remove(), PasswordReset.remove()])
-})
-
-test.serial('POST /password-resets 202 (master)', async (t) => {
-  nock.restore() && nock.isActive() || nock.activate()
+beforeEach(async () => {
   nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
+  user = await User.create({ email: 'a@a.com', password: '123456' })
+  passwordReset = await PasswordReset.create({ user })
+})
+
+afterEach(() => {
+  nock.restore()
+})
+
+test('POST /password-resets 202 (master)', async () => {
   const { status } = await request(app())
     .post('/')
     .send({ access_token: masterKey, email: 'a@a.com', link: 'http://example.com' })
-  t.true(status === 202)
+  expect(status).toEqual(202)
 })
 
-test.serial('POST /password-resets 400 (master) - invalid email', async (t) => {
-  nock.restore() && nock.isActive() || nock.activate()
-  nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
+test('POST /password-resets 400 (master) - invalid email', async () => {
   const { status, body } = await request(app())
     .post('/')
     .send({ access_token: masterKey, email: 'invalid', link: 'http://example.com' })
-  t.true(status === 400)
-  t.true(typeof body === 'object')
-  t.true(body.param === 'email')
+  expect(status).toEqual(400)
+  expect(typeof body).toEqual('object')
+  expect(body.param).toEqual('email')
 })
 
-test.serial('POST /password-resets 400 (master) - missing email', async (t) => {
-  nock.restore() && nock.isActive() || nock.activate()
-  nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
+test('POST /password-resets 400 (master) - missing email', async () => {
   const { status, body } = await request(app())
     .post('/')
     .send({ access_token: masterKey, link: 'http://example.com' })
-  t.true(status === 400)
-  t.true(typeof body === 'object')
-  t.true(body.param === 'email')
+  expect(status).toEqual(400)
+  expect(typeof body).toEqual('object')
+  expect(body.param).toEqual('email')
 })
 
-test.serial('POST /password-resets 400 (master) - missing link', async (t) => {
-  nock.restore() && nock.isActive() || nock.activate()
-  nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
+test('POST /password-resets 400 (master) - missing link', async () => {
   const { status, body } = await request(app())
     .post('/')
     .send({ access_token: masterKey, email: 'a@a.com' })
-  t.true(status === 400)
-  t.true(typeof body === 'object')
-  t.true(body.param === 'link')
+  expect(status).toEqual(400)
+  expect(typeof body).toEqual('object')
+  expect(body.param).toEqual('link')
 })
 
-test.serial('POST /password-resets 404 (master)', async (t) => {
+test('POST /password-resets 404 (master)', async () => {
   const { status } = await request(app())
     .post('/')
     .send({ access_token: masterKey, email: 'b@b.com', link: 'http://example.com' })
-  t.true(status === 404)
+  expect(status).toEqual(404)
 })
 
-test.serial('POST /password-resets 401', async (t) => {
-  nock.restore() && nock.isActive() || nock.activate()
-  nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
+test('POST /password-resets 401', async () => {
   const { status } = await request(app())
     .post('/')
     .send({ email: 'a@a.com', link: 'http://example.com' })
-  t.true(status === 401)
+  expect(status).toEqual(401)
 })
 
-test.serial('GET /password-resets/:token 200', async (t) => {
-  const { user, passwordReset } = t.context
+test('GET /password-resets/:token 200', async () => {
   const { status, body } = await request(app()).get(`/${passwordReset.token}`)
-  t.true(status === 200)
-  t.true(typeof body === 'object')
-  t.true(typeof body.token === 'string')
-  t.true(typeof body.user === 'object')
-  t.true(body.user.id === user.id)
+  expect(status).toEqual(200)
+  expect(typeof body).toEqual('object')
+  expect(typeof body.token).toEqual('string')
+  expect(typeof body.user).toEqual('object')
+  expect(body.user.id).toEqual(user.id)
 })
 
-test.serial('GET /password-resets/:token 404', async (t) => {
+test('GET /password-resets/:token 404', async () => {
   const { status } = await request(app()).get('/123')
-  t.true(status === 404)
+  expect(status).toEqual(404)
 })
 
-test.serial('PUT /password-resets/:token 200', async (t) => {
-  const { passwordReset, user } = t.context
+test('PUT /password-resets/:token 200', async () => {
   await PasswordReset.create({ user })
   const { status, body } = await request(app())
     .put(`/${passwordReset.token}`)
@@ -109,35 +90,34 @@ test.serial('PUT /password-resets/:token 200', async (t) => {
     User.findById(passwordReset.user.id),
     PasswordReset.find({})
   ])
-  t.true(status === 200)
-  t.true(typeof body === 'object')
-  t.true(body.id === user.id)
-  t.true(passwordResets.length === 0)
-  t.notThrows(updatedUser.authenticate('654321'))
+  expect(status).toEqual(200)
+  expect(typeof body).toEqual('object')
+  expect(body.id).toEqual(user.id)
+  expect(passwordResets.length).toEqual(0)
+  expect(await updatedUser.authenticate('123456')).toBeFalsy()
+  expect(await updatedUser.authenticate('654321')).toBeTruthy()
 })
 
-test.serial('PUT /password-resets/:token 400 - invalid password', async (t) => {
-  const { passwordReset } = t.context
+test('PUT /password-resets/:token 400 - invalid password', async () => {
   const { status, body } = await request(app())
     .put(`/${passwordReset.token}`)
     .send({ password: '321' })
-  t.true(status === 400)
-  t.true(typeof body === 'object')
-  t.true(body.param === 'password')
+  expect(status).toEqual(400)
+  expect(typeof body).toEqual('object')
+  expect(body.param).toEqual('password')
 })
 
-test.serial('PUT /password-resets/:token 400 - missing password', async (t) => {
-  const { passwordReset } = t.context
+test('PUT /password-resets/:token 400 - missing password', async () => {
   const { status, body } = await request(app())
     .put(`/${passwordReset.token}`)
-  t.true(status === 400)
-  t.true(typeof body === 'object')
-  t.true(body.param === 'password')
+  expect(status).toEqual(400)
+  expect(typeof body).toEqual('object')
+  expect(body.param).toEqual('password')
 })
 
-test.serial('PUT /password-resets/:token 404', async (t) => {
+test('PUT /password-resets/:token 404', async () => {
   const { status } = await request(app())
     .put('/123')
     .send({ password: '654321' })
-  t.true(status === 404)
+  expect(status).toEqual(404)
 })

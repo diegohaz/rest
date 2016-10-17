@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "test": "cross-env NODE_ENV=test nyc ava",
+    "test": "jest",
     "test:unit": "npm test '<%= srcDir %>/**/!(*.router*).test.js'",
     "test:integration": "npm test '<%= srcDir %>/**/*.router.test.js'",
-    "coverage": "nyc report -r lcov && opn coverage/lcov-report/index.html",
+    "coverage": "npm test -- --coverage && opn coverage/lcov-report/index.html",
     "dev": "nodemon -i '*.test.js' .",
     "prod": "npm run build && nodemon -i '*.test.js' -r dotenv-safe/config dist",
     "lint": "eslint '<%= srcDir %>/**/*.js'",
@@ -18,51 +18,32 @@
     "build": "npm run clean && npm run copy && npm run transpile",
     "docs": "apidoc -i <%= srcDir %> -o docs && apidoc-markdown -p docs -o DOCS.md && opn docs/index.html"
   },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0"
-    ],
-    "plugins": [
-      "transform-runtime",
-      "add-module-exports"
-    ]
-  },
-  "ava": {
-    "files": [
-      "<%= srcDir %>/**/*.test.js"
-    ],
-    "require": [
-      "babel-register"
-    ],
-    "concurrency": 5,
-    "timeout": "2m",
-    "babel": "inherit"
+  "jest": {
+    "testEnvironment": "node",
+    "setupTestFrameworkScriptFile": "test/setup.js"
   },
   "devDependencies": {
     "apidoc": "^0.16.1",
     "apidoc-markdown": "^0.2.0",
-    "ava": "^0.16.0",
     "babel-cli": "^6.14.0",
-    "babel-core": "^6.14.0",
-    "babel-eslint": "^6.0.4",
+    "babel-core": "^6.17.0",
+    "babel-eslint": "^7.0.0",
+    "babel-jest": "^16.0.0",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-runtime": "^6.9.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
     "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.14.0",
+    "babel-preset-stage-1": "^6.16.0",
     "copy": "^0.3.0",
-    "cross-env": "^3.0.0",
     "del-cli": "^0.2.0",
     "dotenv-safe": "^2.3.1",
     "eslint": "^3.3.1",
     "eslint-config-standard": "^6.0.0",
-    "eslint-plugin-promise": "^2.0.1",
+    "eslint-plugin-promise": "^3.0.0",
     "eslint-plugin-standard": "^2.0.0",
+    "jest-cli": "^16.0.1",
     "mockgoose": "^6.0.8",
     "nock": "^8.0.0",
     "nodemon": "^1.10.2",
-    "nyc": "^8.1.0",
     "opn-cli": "^3.1.0",
     "sinon": "^1.17.5",
     "supertest": "^2.0.0",
@@ -78,9 +59,6 @@
     "bodymen": "^1.0.1",
     "compression": "^1.6.2",
     "cors": "^2.7.1",
-    <%_ if (generateAuthApi) { _%>
-    "crypto": "0.0.3",
-    <%_ } _%>
     "express": "^4.13.4",
     <%_ if (https) { _%>
     "express-force-ssl": "^0.3.2",

@@ -1,8 +1,7 @@
-import test from 'ava'
 import nock from 'nock'
 import * as github from '.'
 
-test('getUser', async (t) => {
+it('parses github user', async () => {
   const ghUser = {
     login: 'Test Name',
     id: 123,
@@ -64,9 +63,9 @@ test('getUser', async (t) => {
   nock('https://api.github.com').get('/user/emails').query(true).reply(200, ghUserEmails)
 
   const data = await github.getUser('123')
-  t.true(data.service === 'github')
-  t.true(data.id === ghUser.id)
-  t.true(data.name === ghUser.login)
-  t.true(data.email === ghUserEmails[0].email)
-  t.true(data.picture === ghUser.avatar_url)
+  expect(data.service).toEqual('github')
+  expect(data.id).toEqual(ghUser.id)
+  expect(data.name).toEqual(ghUser.login)
+  expect(data.email).toEqual(ghUserEmails[0].email)
+  expect(data.picture).toEqual(ghUser.avatar_url)
 })

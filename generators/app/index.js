@@ -98,6 +98,7 @@ module.exports = yeoman.Base.extend({
 
     copy(tPath('editorconfig'), dPath('.editorconfig'));
     copy(tPath('eslintrc'), dPath('.eslintrc'));
+    copy(tPath('babelrc'), dPath('.babelrc'));
     copyTpl(tPath('gitignore'), dPath('.gitignore'), props);
     copyTpl(tPath('travis.yml'), dPath('.travis.yml'), props);
     copyTpl(tPath('env'), dPath('.env'), props);
@@ -105,6 +106,7 @@ module.exports = yeoman.Base.extend({
     copyTpl(tPath('_package.json'), dPath('package.json'), props);
     copyTpl(tPath('README.md'), dPath('README.md'), props);
     copyTpl(tPath('src'), dPath(props.srcDir), props);
+    copyTpl(tPath('test'), dPath('test'), props);
     copyTpl(tPath('services/response'), dPath(props.srcDir + '/services/response'), props);
 
     if (props.generateAuthApi) {
