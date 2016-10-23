@@ -33,7 +33,7 @@ module.exports = yeoman.Base.extend({
     }, {
       type: 'confirm',
       name: 'https',
-      message: 'Do you to force SSL in production mode?',
+      message: 'Do you want to force SSL in production mode?',
       default: false
     }, {
       type: 'confirm',
@@ -66,7 +66,8 @@ module.exports = yeoman.Base.extend({
     }, {
       type: 'input',
       name: 'sendgridKey',
-      message: 'What\'s your SendGrid API Key (how to get one: https://sendgrid.com/docs/Classroom/Send/How_Emails_Are_Sent/api_keys.html)?',
+      message: 'What\'s your SendGrid API Key (you can skip this and update the .env file later)?',
+      default: 'key',
       when: function (props) {
         return props.passwordReset;
       }

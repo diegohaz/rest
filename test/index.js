@@ -158,8 +158,7 @@ describe('generator-rest', function () {
     before(function (done) {
       install({
         https: true,
-        passwordReset: true,
-        sendgridKey: 'sendgridKey'
+        passwordReset: true
       }, done);
     });
     it('should install and pass tests', function () {});
