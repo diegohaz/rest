@@ -109,6 +109,7 @@ module.exports = yeoman.Base.extend({
     copyTpl(tPath('src'), dPath(props.srcDir), props);
     copyTpl(tPath('test'), dPath('test'), props);
     copyTpl(tPath('services/response'), dPath(props.srcDir + '/services/response'), props);
+    copyTpl(tPath('api/index.js'), dPath(props.srcDir + '/' + props.apiDir + '/index.js'), props);
 
     if (props.generateAuthApi) {
       copyTpl(tPath('services/passport'), dPath(props.srcDir + '/services/passport'), props);

@@ -8,7 +8,7 @@ if (authServices.length) {
 }
 _%>
 import { Router } from 'express'
-import { login } from './auth.controller'
+import { login } from './controller'
 <%_ if (passport.length) { _%>
 import { <%= passport.join(', ') %> } from '../../services/passport'
 <%_ } _%>

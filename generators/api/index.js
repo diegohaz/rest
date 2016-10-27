@@ -159,22 +159,21 @@ module.exports = yeoman.Base.extend({
 
   writing: function () {
     var props = this.props;
-    var routesFile = path.join(props.srcDir, 'routes.js');
+    var routesFile = path.join(props.dir, 'index.js');
     var copyTpl = this.fs.copyTpl.bind(this.fs);
     var tPath = this.templatePath.bind(this);
     var dPath = this.destinationPath.bind(this);
     var filepath = function (filename) {
-      return path.join(props.dir, props.kebab, filename.replace('api', props.kebab));
+      return path.join(props.dir, props.kebab, filename);
     };
 
-    copyTpl(tPath('api.controller.js'), dPath(filepath('api.controller.js')), props);
-    copyTpl(tPath('api.router.js'), dPath(filepath('api.router.js')), props);
-    copyTpl(tPath('api.router.test.js'), dPath(filepath('api.router.test.js')), props);
-    copyTpl(tPath('package.json'), dPath(filepath('package.json')), props);
+    copyTpl(tPath('controller.js'), dPath(filepath('controller.js')), props);
+    copyTpl(tPath('index.js'), dPath(filepath('index.js')), props);
+    copyTpl(tPath('index.test.js'), dPath(filepath('index.test.js')), props);
 
     if (props.generateModel) {
-      copyTpl(tPath('api.model.js'), dPath(filepath('api.model.js')), props);
-      copyTpl(tPath('api.model.test.js'), dPath(filepath('api.model.test.js')), props);
+      copyTpl(tPath('model.js'), dPath(filepath('model.js')), props);
+      copyTpl(tPath('model.test.js'), dPath(filepath('model.test.js')), props);
     }
 
     if (this.fs.exists(routesFile)) {
@@ -184,9 +183,7 @@ module.exports = yeoman.Base.extend({
         return statement.type === 'ImportDeclaration';
       });
       var actualImportCode = recast.print(body[lastImportIndex]).code;
-      var importString = [
-        'import ', props.camel, ' from \'./', props.apiDir, '/', props.kebab, '\''
-      ].join('');
+      var importString = ['import ', props.camel, ' from \'./', props.kebab, '\''].join('');
       body.splice(lastImportIndex, 1, importString);
       body.splice(lastImportIndex, 0, actualImportCode);
 

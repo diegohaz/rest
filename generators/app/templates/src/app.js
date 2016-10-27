@@ -2,9 +2,9 @@ import http from 'http'
 import { env, mongo, port, ip } from './config'
 import mongoose from './config/mongoose'
 import express from './config/express'
-import routes from './routes'
+import api from './api'
 
-const app = express(routes)
+const app = express(api)
 const server = http.createServer(app)
 
 mongoose.connect(mongo.uri)
