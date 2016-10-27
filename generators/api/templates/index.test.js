@@ -15,7 +15,7 @@ import { masterKey } from '../../config'
 import { signSync } from '../../services/jwt'
 <%_ } _%>
 <%_ if (methods.length) { _%>
-import express from '../../config/express'
+import express from '../../services/express'
 <%_ } _%>
 <%_ if (hasSession) { _%>
 import { User } from '../user'

@@ -8,7 +8,7 @@ import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
-import { env } from './'
+import { env } from '../../config'
 
 export default (routes) => {
   const app = express()

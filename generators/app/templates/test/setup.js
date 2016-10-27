@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import mockgoose from 'mockgoose'
-import mongoose from '../<%= srcDir %>/config/mongoose'
+import mongoose from '../<%= srcDir %>/services/mongoose'
 import { mongo } from '../<%= srcDir %>/config'
 
 EventEmitter.defaultMaxListeners = Infinity

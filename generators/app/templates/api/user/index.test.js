@@ -1,7 +1,7 @@
 import request from 'supertest-as-promised'
 import { masterKey } from '../../config'
 import { signSync } from '../../services/jwt'
-import express from '../../config/express'
+import express from '../../services/express'
 import routes, { User } from '.'
 
 const app = () => express(routes)

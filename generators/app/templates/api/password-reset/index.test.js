@@ -1,6 +1,6 @@
 import request from 'supertest-as-promised'
 import nock from 'nock'
-import express from '../../config/express'
+import express from '../../services/express'
 import { masterKey } from '../../config'
 import { User } from '../user'
 import routes, { PasswordReset } from '.'

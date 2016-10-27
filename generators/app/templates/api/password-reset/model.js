@@ -29,4 +29,5 @@ passwordResetSchema.methods = {
   }
 }
 
-export default mongoose.model('PasswordReset', passwordResetSchema)
+module.exports = mongoose.model('PasswordReset', passwordResetSchema)
+export default module.exports

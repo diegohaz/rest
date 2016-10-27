@@ -10,7 +10,7 @@ import { verify } from '../../services/jwt'
 <%_ authServices.forEach(function(service) { _%>
 import * as <%= service %> from '../../services/<%= service %>'
 <%_ }) _%>
-import express from '../../config/express'
+import express from '../../services/express'
 import routes from '.'
 
 const app = () => express(routes)

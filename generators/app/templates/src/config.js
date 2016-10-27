@@ -14,15 +14,15 @@ const requireProcessEnv = (name) => {
 if (process.env.NODE_ENV !== 'production' && !process.env.CI) {
   const dotenv = require('dotenv-safe')
   dotenv.load({
-    path: path.join(__dirname, '../../.env'),
-    sample: path.join(__dirname, '../../.env.example')
+    path: path.join(__dirname, '../.env'),
+    sample: path.join(__dirname, '../.env.example')
   })
 }
 
 const config = {
   all: {
     env: process.env.NODE_ENV || 'development',
-    root: path.join(__dirname, '../../'),
+    root: path.join(__dirname, '..'),
     port: process.env.PORT || 9000,
     ip: process.env.IP || '0.0.0.0',
     <%_ if (typeof passwordReset !== 'undefined' && passwordReset) { _%>
@@ -68,4 +68,5 @@ const config = {
   }
 }
 
-export default _.merge(config.all, config[config.all.env])
+module.exports = _.merge(config.all, config[config.all.env])
+export default module.exports

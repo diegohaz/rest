@@ -1,6 +1,6 @@
 import Promise from 'bluebird'
 import mongoose from 'mongoose'
-import { mongo } from '.'
+import { mongo } from '../../config'
 
 Object.keys(mongo.options).forEach((key) => {
   mongoose.set(key, mongo.options[key])
