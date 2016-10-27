@@ -2,9 +2,9 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import {<% if (passwordSignup) { %> password as passwordAuth,<% } %> master, token } from '../../services/passport'
-import { index, showMe, show, create, update<% if (passwordSignup) { %>, updatePassword<% } %>, destroy } from './user.controller'
-import { schema } from './user.model'
-export User, { schema } from './user.model'
+import { index, showMe, show, create, update<% if (passwordSignup) { %>, updatePassword<% } %>, destroy } from './controller'
+import { schema } from './model'
+export User, { schema } from './model'
 
 const router = new Router()
 const { email<% if (passwordSignup) { %>, password<% } %>, name, picture, role } = schema.tree

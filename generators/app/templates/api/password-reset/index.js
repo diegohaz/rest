@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import { middleware as body } from 'bodymen'
 import { master } from '../../services/passport'
-import { create, show, update } from './password-reset.controller'
+import { create, show, update } from './controller'
 import { schema } from '../user'
-export PasswordReset, { schema } from './password-reset.model'
+export PasswordReset, { schema } from './model'
 
 const router = new Router()
 const { email, password } = schema.tree

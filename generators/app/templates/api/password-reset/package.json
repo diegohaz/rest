@@ -1,6 +1,0 @@
-{
-  "name": "password-reset",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./password-reset.router.js"
-}

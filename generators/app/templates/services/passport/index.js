@@ -9,7 +9,7 @@ import { jwtSecret, masterKey } from '../../config'
 <%_ authServices.forEach(function (service) { _%>
 import * as <%= service %>Service from '../<%= service %>'
 <%_ }) _%>
-import User<% if (passwordSignup) { %>, { schema }<% } %> from '../../<%= apiDir %>/user/user.model'
+import User<% if (passwordSignup) { %>, { schema }<% } %> from '../../<%= apiDir %>/user/model'
 
 <%_ if (passwordSignup) { _%>
 export const password = () => (req, res, next) =>
