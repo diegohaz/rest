@@ -43,13 +43,13 @@ import { middleware as body } from 'bodymen'
 import { <%= authMiddlewares.join(', ') %> } from '../../services/passport'
 <%_ } _%>
 <%_ if (methods.length) { _%>
-import { <%= methods.map(function (method) { return method.controller }).join(', ') %> } from './<%= kebab %>.controller'
+import { <%= methods.map(function (method) { return method.controller }).join(', ') %> } from './controller'
 <%_ } _%>
 <%_ if (generateModel) { _%>
 <%_ if (hasBody) { _%>
-import { schema } from './<%= kebab %>.model'
+import { schema } from './model'
 <%_ } _%>
-export <%= pascal %>, { schema } from './<%= kebab %>.model'
+export <%= pascal %>, { schema } from './model'
 <%_ } _%>
 
 const router = new Router()
