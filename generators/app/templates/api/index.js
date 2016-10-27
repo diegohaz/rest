@@ -1,10 +1,10 @@
 import { Router } from 'express'
 <%_ if (generateAuthApi) { _%>
-import user from './<%= apiDir %>/user'
-import auth from './<%= apiDir %>/auth'
+import user from './user'
+import auth from './auth'
 <%_ } _%>
 <%_ if (typeof passwordReset !== 'undefined' && passwordReset) { _%>
-import passwordReset from './<%= apiDir %>/password-reset'
+import passwordReset from './password-reset'
 <%_ } _%>
 
 const router = new Router()

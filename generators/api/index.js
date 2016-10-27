@@ -159,7 +159,7 @@ module.exports = yeoman.Base.extend({
 
   writing: function () {
     var props = this.props;
-    var routesFile = path.join(props.srcDir, 'routes.js');
+    var routesFile = path.join(props.dir, 'index.js');
     var copyTpl = this.fs.copyTpl.bind(this.fs);
     var tPath = this.templatePath.bind(this);
     var dPath = this.destinationPath.bind(this);
@@ -183,9 +183,7 @@ module.exports = yeoman.Base.extend({
         return statement.type === 'ImportDeclaration';
       });
       var actualImportCode = recast.print(body[lastImportIndex]).code;
-      var importString = [
-        'import ', props.camel, ' from \'./', props.apiDir, '/', props.kebab, '\''
-      ].join('');
+      var importString = ['import ', props.camel, ' from \'./', props.kebab, '\''].join('');
       body.splice(lastImportIndex, 1, importString);
       body.splice(lastImportIndex, 0, actualImportCode);
 
