@@ -45,5 +45,7 @@ const <%= camel %>Schema = new Schema({}, { timestamps: true })
   }
 }
 
-module.exports = mongoose.model('<%= pascal %>', <%= camel %>Schema)
-export default module.exports
+const model = mongoose.model('<%= pascal %>', <%= camel %>Schema)
+
+export const schema = model.schema
+export default model
