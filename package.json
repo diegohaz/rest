@@ -79,7 +79,7 @@
     "mongoose-create-unique": "^0.4.1",
     "mongoose-keywords": "^0.3.1",
     "morgan": "^1.7.0",
-    "nock": "^8.0.0",
+    "nock": "^9.0.2",
     "nodemon": "^1.10.2",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
