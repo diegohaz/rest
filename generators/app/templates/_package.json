@@ -6,13 +6,15 @@
   "scripts": {
     "start": "node .",
     "test": "jest",
-    "test:unit": "npm test '<%= srcDir %>/**/!(*.router*).test.js'",
-    "test:integration": "npm test '<%= srcDir %>/**/*.router.test.js'",
-    "coverage": "npm test -- --coverage && opn coverage/lcov-report/index.html",
-    "dev": "nodemon -i '*.test.js' .",
-    "prod": "cross-env NODE_ENV=production nodemon -i '*.test.js' -r dotenv-safe/config .",
-    "lint": "eslint '<%= srcDir %>/**/*.js'",
-    "docs": "apidoc -i <%= srcDir %> -o docs && apidoc-markdown -p docs -o DOCS.md && opn docs/index.html"
+    "test:unit": "npm test \"<%= srcDir %>/**/!(index).test.js\"",
+    "test:integration": "npm test \"<%= srcDir %>/**/index.test.js\"",
+    "coverage": "npm test -- --coverage",
+    "postcoverage": "opn coverage/lcov-report/index.html",
+    "dev": "nodemon -i \"*.test.js\" .",
+    "prod": "cross-env NODE_ENV=production nodemon -i \"*.test.js\" -r dotenv-safe/config .",
+    "lint": "eslint <%= srcDir %>",
+    "docs": "apidoc -i <%= srcDir %> -o docs && apidoc-markdown -p docs -o DOCS.md",
+    "postdocs": "opn docs/index.html"
   },
   "jest": {
     "testEnvironment": "node",
