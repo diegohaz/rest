@@ -11,7 +11,7 @@ const requireProcessEnv = (name) => {
 }
 
 /* istanbul ignore next */
-if (process.env.NODE_ENV !== 'production' && !process.env.CI) {
+if (process.env.NODE_ENV !== 'production') {
   const dotenv = require('dotenv-safe')
   dotenv.load({
     path: path.join(__dirname, '../.env'),
