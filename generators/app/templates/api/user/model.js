@@ -11,9 +11,6 @@ import mongooseKeywords from 'mongoose-keywords'
 import { env } from '../../config'
 <%_ } _%>
 
-<%_ if (passwordSignup) { _%>
-const compare = require('bluebird').promisify(bcrypt.compare)
-<%_ } _%>
 const roles = ['user', 'admin']
 
 const userSchema = new Schema({
@@ -77,12 +74,10 @@ userSchema.pre('save', function (next) {
   /* istanbul ignore next */
   const rounds = env === 'test' ? 1 : 9
 
-  bcrypt.hash(this.password, rounds, (err, hash) => {
-    /* istanbul ignore next */
-    if (err) return next(err)
+  bcrypt.hash(this.password, rounds).then((hash) => {
     this.password = hash
     next()
-  })
+  }).catch(next)
 })
 
 <%_ } _%>
@@ -101,7 +96,7 @@ userSchema.methods = {
   }<%_ if (passwordSignup) { _%>,
 
   authenticate (password) {
-    return compare(password, this.password).then((valid) => valid ? this : false)
+    return bcrypt.compare(password, this.password).then((valid) => valid ? this : false)
   }
   <%_ } _%>
 }
