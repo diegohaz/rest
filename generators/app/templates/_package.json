@@ -76,7 +76,7 @@
     <%_ } _%>
     "querymen": "^2.0.0",
     <%_ if (generateAuthApi) { _%>
-    "rand-token": "^0.2.1",
+    "rand-token": "^0.3.0",
     <%_ } _%>
     "request": "^2.74.0",
     "request-promise": "^4.1.1"<%_ if (typeof sendgridKey !== 'undefined' && sendgridKey) { _%>,
