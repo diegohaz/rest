@@ -1,9 +1,7 @@
-# generator-rest [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage percentage][coveralls-image]][coveralls-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# rest [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage percentage][coveralls-image]][coveralls-url]
 > RESTful API generator using NodeJS, Express and Mongoose
 
 [Watch this video](https://www.youtube.com/watch?v=6x-ijyG-ack) for an overview on how to use **generator-rest** and deploy your project to [Heroku](https://heroku.com).
-
-[Here](https://github.com/diegohaz/generator-rest-example)'s a fully commented example of the generated project. Take a look if you want to learn more about the generated code.
 
 ## Features
 
@@ -236,9 +234,7 @@ MIT © [Diego Haz](https://github.com/diegohaz)
 
 [npm-image]: https://badge.fury.io/js/generator-rest.svg
 [npm-url]: https://npmjs.org/package/generator-rest
-[travis-image]: https://travis-ci.org/diegohaz/generator-rest.svg?branch=master
-[travis-url]: https://travis-ci.org/diegohaz/generator-rest
-[daviddm-image]: https://david-dm.org/diegohaz/generator-rest.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/diegohaz/generator-rest
+[travis-image]: https://travis-ci.org/diegohaz/rest.svg?branch=master
+[travis-url]: https://travis-ci.org/diegohaz/rest
 [coveralls-image]: https://coveralls.io/repos/diegohaz/generator-rest/badge.svg
 [coveralls-url]: https://coveralls.io/r/diegohaz/generator-rest
