@@ -36,6 +36,8 @@ function install(answers, done, generateApis) {
           return apiWithModelFields(dir);
         }).then(function (dir) {
           return apiWithUserModelField(dir);
+        }).then(function (dir) {
+          return apiWithCountAndRowsGetList(dir);
         });
       }
 
@@ -137,6 +139,13 @@ function apiWithUserModelField(dir) {
   }, dir);
 }
 
+function apiWithCountAndRowsGetList(dir) {
+  return api({
+    kebab: 'count-and-rows-get-list',
+    getList: true
+  }, dir);
+}
+
 function api(answers, dir) {
   return helpers.run(path.join(__dirname, '../generators/api'))
     .inTmpDir(function (tmpDir) {
@@ -190,6 +199,13 @@ describe('generator-rest', function () {
   describe('install without auth API', function () {
     before(function (done) {
       install({generateAuthApi: false}, done, true);
+    });
+    it('should install and pass tests', function () {});
+  });
+
+  describe('install with { rows, count } API', function () {
+    before(function (done) {
+      install({getList: true}, done, true);
     });
     it('should install and pass tests', function () {});
   });

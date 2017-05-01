@@ -8,6 +8,7 @@ const app = express(api)
 const server = http.createServer(app)
 
 mongoose.connect(mongo.uri)
+mongoose.Promise = Promise
 
 setImmediate(() => {
   server.listen(port, ip, () => {

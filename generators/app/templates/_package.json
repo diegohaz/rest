@@ -61,7 +61,6 @@
     <%_ if (generateAuthApi) { _%>
     "jsonwebtoken": "^7.1.9",
     <%_ } _%>
-    "lodash": "^4.13.1",
     "mongoose": "^4.4.19",
     "mongoose-create-unique": "^0.4.1",
     "mongoose-keywords": "^0.3.1",

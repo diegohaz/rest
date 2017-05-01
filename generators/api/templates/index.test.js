@@ -74,7 +74,7 @@ methods.forEach(function (method) {
   var request = needsId ? '`/${' + camel + '.id}`' : "'/'";
   var queryOrSend = ['POST', 'PUT'].indexOf(verb) !== -1 ? 'send' : 'query';
   var check = method.method === 'GET LIST'
-    ? ['Array.isArray(body)', 'toBe', 'true']
+    ? (getList ? ['Array.isArray(body.rows)', 'toBe', 'true'] : ['Array.isArray(body)', 'toBe', 'true'])
     : ['typeof body', 'toEqual', "'object'"];
   var params = [];
   var additionalChecks = [];
@@ -88,6 +88,9 @@ methods.forEach(function (method) {
   if (needsId) {
     additionalChecks.push(['body.id', 'toEqual', camel + '.id']);
   }
+  if (getList && method.method === 'GET LIST') {
+    additionalChecks.push(['Number.isNaN(body.count)', 'toBe', 'false']);
+  }
   if (['PUT', 'POST'].indexOf(verb) !== -1 && modelFields.length) {
     params.push.apply(params, modelFields.map(function (field) {
       return field + ": 'test'";
@@ -98,7 +101,11 @@ methods.forEach(function (method) {
   }
   if (verb !== 'DELETE' && storeUser && method.user) {
     if (method.method === 'GET LIST') {
-      additionalChecks.push(['typeof body[0].' + userField, 'toEqual', "'object'"]);
+      if (getList) {
+        additionalChecks.push(['typeof body.rows[0].' + userField, 'toEqual', "'object'"]);
+      } else {
+        additionalChecks.push(['typeof body[0].' + userField, 'toEqual', "'object'"]);
+      }
     } else {
       additionalChecks.push(['typeof body.' + userField, 'toEqual', "'object'"]);
     }

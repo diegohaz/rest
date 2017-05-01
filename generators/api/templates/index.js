@@ -73,7 +73,12 @@ const { <%= modelFields.join(', ') %> } = schema.tree
  <%_ } _%>
  <%_ if (method.method === 'GET LIST') { _%>
  * @apiUse listParams
+ <%_ if (getList) { _%>
+ * @apiSuccess {Number} count Total amount of <%= lowers %>.
+ * @apiSuccess {Object[]} rows List of <%= lowers %>.
+ <%_ } else { _%>
  * @apiSuccess {Object[]} <%= camels %> List of <%= lowers %>.
+ <%_ } _%>
  * @apiError {Object} 400 Some parameters may contain invalid values.
  <%_ } else if (method.method === 'DELETE') { _%>
  * @apiSuccess (Success 204) 204 No Content.

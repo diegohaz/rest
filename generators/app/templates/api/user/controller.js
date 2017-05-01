@@ -1,12 +1,23 @@
-import _ from 'lodash'
 import { success, notFound } from '../../services/response/'
 import { User } from '.'
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
+<%_ if (getList) { _%>
+  User.count()
+    .then(count => User.find(query, select, cursor)
+      .then(users => ({
+        rows: users.map((user) => user.view()),
+        count
+      }))
+    )
+    .then(success(res))
+    .catch(next)
+<%_ } else { _%>
   User.find(query, select, cursor)
     .then((users) => users.map((user) => user.view()))
     .then(success(res))
     .catch(next)
+<%_ } _%>
 
 export const show = ({ params }, res, next) =>
   User.findById(params.id)
@@ -51,7 +62,7 @@ export const update = ({ bodymen: { body }, params, user }, res, next) =>
       }
       return result
     })
-    .then((user) => user ? _.merge(user, body).save() : null)
+    .then((user) => user ? Object.assign(user, body).save() : null)
     .then((user) => user ? user.view(true) : null)
     .then(success(res))
     .catch(next)

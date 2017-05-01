@@ -71,6 +71,14 @@ module.exports = yeoman.Base.extend({
       when: function (props) {
         return props.passwordReset;
       }
+    }, {
+      type: 'confirm',
+      name: 'getList',
+      message: 'Do you want the retrieve methods from users (GET) to have the form { rows, count } ?',
+      default: false,
+      when: function (props) {
+        return props.authMethods;
+      }
     }]).then(function (props) {
       that.props = props;
       that.props.slug = _.kebabCase(that.props.name);
