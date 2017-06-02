@@ -1,6 +1,9 @@
 import _ from 'lodash'
 import { success, notFound } from '../../services/response/'
 import { User } from '.'
+<%_ if (authOnUserCreate) { _%>
+import { sign } from '../../services/jwt'
+<%_ } _%>
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   User.find(query, select, cursor)
@@ -20,8 +23,16 @@ export const showMe = ({ user }, res) =>
 
 export const create = ({ bodymen: { body } }, res, next) =>
   User.create(body)
+    <%_ if (authOnUserCreate) { _%>
+    .then(user => {
+      sign(user.id)
+        .then((token) => ({ token, user: user.view(true) }))
+        .then(success(res, 201))
+    })
+    <%_ } else { _%>
     .then((user) => user.view(true))
     .then(success(res, 201))
+    <%_ } _%>
     .catch((err) => {
       /* istanbul ignore else */
       if (err.name === 'MongoError' && err.code === 11000) {
