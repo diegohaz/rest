@@ -1,5 +1,4 @@
 <%_ if (generateModel && methods.length) { _%>
-import _ from 'lodash'
 import { success, notFound<% if (storeUser && (userMethods.indexOf('PUT') !== -1 || userMethods.indexOf('DELETE') !== -1)) { %>, authorOrAdmin<% } %> } from '../../services/response/'
 import { <%= pascal %> } from '.'
 <%_ } _%>
@@ -22,7 +21,20 @@ export const create = ({ <%= storeUser ? 'user, ' : '' %><%- modelFields.length 
 <%_ if (methods.indexOf('GET LIST') !== -1) { _%>
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
-  <%_ if (generateModel) { _%>
+  <%_ if (generateModel) { if (getList) { _%>
+  <%= pascal %>.count()
+    .then(count => <%= pascal %>.find(query, select, cursor)
+      <%_ if (storeUser) { _%>
+      .populate('<%= userField %>')
+      <%_ } _%>
+      .then((<%= camels %>) => ({
+        count,
+        rows: <%= camels %>.map((<%= camel %>) => <%= camel %>.view())
+      }))
+    )
+    .then(success(res))
+    .catch(next)
+  <%_ } else { _%>
   <%= pascal %>.find(query, select, cursor)
     <%_ if (storeUser) { _%>
     .populate('<%= userField %>')
@@ -30,7 +42,7 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) =>
     .then((<%= camels %>) => <%= camels %>.map((<%= camel %>) => <%= camel %>.view()))
     .then(success(res))
     .catch(next)
-  <%_ } else { _%>
+  <%_ } } else { _%>
   res.status(200).json([])
   <%_ } _%>
 <%_ } _%>
@@ -64,7 +76,7 @@ export const update = ({ <%=
     <%_ if (storeUser && userMethods.indexOf('PUT') !== -1) { _%>
     .then(authorOrAdmin(res, user, '<%= userField %>'))
     <%_ } _%>
-    .then((<%= camel %>) => <%= camel %> ? _.merge(<%= camel %>, body).save() : null)
+    .then((<%= camel %>) => <%= camel %> ? Object.assign(<%= camel %>, body).save() : null)
     .then((<%= camel %>) => <%= camel %> ? <%= camel %>.view(true) : null)
     .then(success(res))
     .catch(next)

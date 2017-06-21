@@ -127,6 +127,17 @@ module.exports = yeoman.Base.extend({
       when: function (props) {
         return props.storeUser;
       }
+    }, {
+      type: 'confirm',
+      name: 'getList',
+      message: 'Do you want the retrieve methods (GET) to have the form { rows, count } ?',
+      default: false,
+      when: function (props) {
+        var methods = getSelectedMethods(props);
+        return methods.find(function (method) {
+          return method.value === 'GET LIST';
+        }) && props.generateModel;
+      }
     }];
 
     return this.prompt(prompts).then(function (props) {
@@ -149,6 +160,7 @@ module.exports = yeoman.Base.extend({
           return field.trim();
         }) : [];
 
+      this.props.getList = props.getList || false;
       this.props.storeUser = this.props.storeUser || false;
 
       if (props.userField && this.props.modelFields.indexOf(props.userField) !== -1) {
