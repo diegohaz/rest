@@ -15,7 +15,11 @@ const <%= camel %>Schema = new Schema({
   }<%= i !== modelFields.length - 1 ? ',' : ''%>
   <%_ }) _%>
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: {
+    virtuals: true,
+    transform: (obj, ret) => { delete ret._id }
+  }
 })
 <%_ } else { _%>
 const <%= camel %>Schema = new Schema({}, { timestamps: true })
