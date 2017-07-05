@@ -155,13 +155,15 @@ module.exports = yeoman.Base.extend({
       this.props.camels = pluralize(this.props.camel);
       this.props.pascal = _.upperFirst(this.props.camel);
       this.props.pascals = _.upperFirst(this.props.camels);
-      this.props.lower = _.lowerCase(this.props.camel)
+      this.props.lower = _.lowerCase(this.props.camel);
       this.props.lowers = _.lowerCase(this.props.camels);
       this.props.start = _.upperFirst(this.props.lower);
       this.props.starts = _.upperFirst(this.props.lowers);
 
       // append suffix so we don't get reserved word clashes
-      this.props.camel = _.lowerCase(this.props.camel) + this.props.lowerSuffix;
+      if (this.props.lowerSuffix) {
+        this.props.camel = _.lowerCase(this.props.camel) + this.props.lowerSuffix;
+      }
 
       this.props.authMethods = authMethods;
       this.props.srcDir = srcDir;
