@@ -1,11 +1,11 @@
 import request from 'supertest-as-promised'
 import nock from 'nock'
 import express from '../../services/express'
-import { masterKey } from '../../config'
+import { masterKey, apiRoot } from '../../config'
 import { User } from '../user'
 import routes, { PasswordReset } from '.'
 
-const app = () => express(routes)
+const app = () => express(apiRoot, routes)
 
 let user, passwordReset
 
@@ -21,14 +21,14 @@ afterEach(() => {
 
 test('POST /password-resets 202 (master)', async () => {
   const { status } = await request(app())
-    .post('/')
+    .post(apiRoot)
     .send({ access_token: masterKey, email: 'a@a.com', link: 'http://example.com' })
   expect(status).toBe(202)
 })
 
 test('POST /password-resets 400 (master) - invalid email', async () => {
   const { status, body } = await request(app())
-    .post('/')
+    .post(apiRoot)
     .send({ access_token: masterKey, email: 'invalid', link: 'http://example.com' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
@@ -37,7 +37,7 @@ test('POST /password-resets 400 (master) - invalid email', async () => {
 
 test('POST /password-resets 400 (master) - missing email', async () => {
   const { status, body } = await request(app())
-    .post('/')
+    .post(apiRoot)
     .send({ access_token: masterKey, link: 'http://example.com' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
@@ -46,7 +46,7 @@ test('POST /password-resets 400 (master) - missing email', async () => {
 
 test('POST /password-resets 400 (master) - missing link', async () => {
   const { status, body } = await request(app())
-    .post('/')
+    .post(apiRoot)
     .send({ access_token: masterKey, email: 'a@a.com' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
@@ -55,20 +55,20 @@ test('POST /password-resets 400 (master) - missing link', async () => {
 
 test('POST /password-resets 404 (master)', async () => {
   const { status } = await request(app())
-    .post('/')
+    .post(apiRoot)
     .send({ access_token: masterKey, email: 'b@b.com', link: 'http://example.com' })
   expect(status).toBe(404)
 })
 
 test('POST /password-resets 401', async () => {
   const { status } = await request(app())
-    .post('/')
+    .post(apiRoot)
     .send({ email: 'a@a.com', link: 'http://example.com' })
   expect(status).toBe(401)
 })
 
 test('GET /password-resets/:token 200', async () => {
-  const { status, body } = await request(app()).get(`/${passwordReset.token}`)
+  const { status, body } = await request(app()).get(`${apiRoot}/${passwordReset.token}`)
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(typeof body.token).toBe('string')
@@ -77,14 +77,14 @@ test('GET /password-resets/:token 200', async () => {
 })
 
 test('GET /password-resets/:token 404', async () => {
-  const { status } = await request(app()).get('/123')
+  const { status } = await request(app()).get(apiRoot + '/123')
   expect(status).toBe(404)
 })
 
 test('PUT /password-resets/:token 200', async () => {
   await PasswordReset.create({ user })
   const { status, body } = await request(app())
-    .put(`/${passwordReset.token}`)
+    .put(`${apiRoot}/${passwordReset.token}`)
     .send({ password: '654321' })
   const [ updatedUser, passwordResets ] = await Promise.all([
     User.findById(passwordReset.user.id),
@@ -100,7 +100,7 @@ test('PUT /password-resets/:token 200', async () => {
 
 test('PUT /password-resets/:token 400 - invalid password', async () => {
   const { status, body } = await request(app())
-    .put(`/${passwordReset.token}`)
+    .put(`${apiRoot}/${passwordReset.token}`)
     .send({ password: '321' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
@@ -109,7 +109,7 @@ test('PUT /password-resets/:token 400 - invalid password', async () => {
 
 test('PUT /password-resets/:token 400 - missing password', async () => {
   const { status, body } = await request(app())
-    .put(`/${passwordReset.token}`)
+    .put(`${apiRoot}/${passwordReset.token}`)
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
   expect(body.param).toBe('password')
@@ -117,7 +117,7 @@ test('PUT /password-resets/:token 400 - missing password', async () => {
 
 test('PUT /password-resets/:token 404', async () => {
   const { status } = await request(app())
-    .put('/123')
+    .put(apiRoot + '/123')
     .send({ password: '654321' })
   expect(status).toBe(404)
 })

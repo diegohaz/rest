@@ -9,8 +9,10 @@ _%>
 import request from 'supertest-as-promised'
 <%_ } _%>
 <%_ if (hasMaster) { _%>
-import { masterKey } from '../../config'
-<%_ } _%>
+import { masterKey, apiRoot } from '../../config'
+<%_ } else if (methods.length) { _%>
+import { apiRoot } from '../../config'
+<%_ } _%>   
 <%_ if (hasSession) { _%>
 import { signSync } from '../../services/jwt'
 <%_ } _%>
@@ -23,7 +25,7 @@ import { User } from '../user'
 <%_ if (methods.length) { _%>
 import routes<% if (generateModel) { %>, { <%= pascal %> }<% } %> from '.'
 
-const app = () => express(routes)
+const app = () => express(apiRoot, routes)
 <%_ } _%>
 <%_
 if (methods.length && (generateModel || hasSession)) {
@@ -71,7 +73,7 @@ methods.forEach(function (method) {
   var successCode = verb === 'POST' ? 201 : verb === 'DELETE' ? 204 : 200;
   var permission = method.permission ? ' (' + method.permission + ')' : '';
   var link = '/' + kebabs + (needsId ? '/:id' : '');
-  var request = needsId ? '`/${' + camel + '.id}`' : "'/'";
+  var request = needsId ? '`${apiRoot}/${' + camel + '.id}`' : '`${apiRoot}`';
   var queryOrSend = ['POST', 'PUT'].indexOf(verb) !== -1 ? 'send' : 'query';
   var check = method.method === 'GET LIST'
     ? (getList ? ['Array.isArray(body.rows)', 'toBe', 'true'] : ['Array.isArray(body)', 'toBe', 'true'])
@@ -169,7 +171,7 @@ test('<%= verb %> <%= link %> 401', async () => {
 
 test('<%= verb %> <%= link %> 404<%= permission %>', async () => {
   const { status } = await request(app())
-    .<%= method.router %>('/123456789098765432123456')
+    .<%= method.router %>(apiRoot + '/123456789098765432123456')
     <%_ if (params.length) { _%>
     .<%= queryOrSend %>({ <%- params.join(', ') %> })
     <%_ } _%>
