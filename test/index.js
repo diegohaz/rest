@@ -21,6 +21,8 @@ function install(answers, done, generateApis) {
         }).then(function (dir) {
           return apiWithNoMethods(dir);
         }).then(function (dir) {
+          return apiWithReservedWord(dir);
+        }).then(function (dir) {
           return apiWithAllMasterMethods(dir);
         }).then(function (dir) {
           return apiWithAllAdminMethods(dir);
@@ -56,6 +58,7 @@ function install(answers, done, generateApis) {
         });
       }).catch(function (err) {
         console.log(err);
+        console.log(err.stack);
         done(err);
       });
     });
@@ -75,9 +78,16 @@ function apiWithDifferentEndpointName(dir) {
 }
 
 function apiWithNoMethods(dir) {
+  console.log("apiWithNoMethods");
   return api({
     kebab: 'no-method',
     methods: []
+  }, dir);
+}
+
+function apiWithReservedWord(dir) {
+  return api({
+    kebab: 'case'
   }, dir);
 }
 
@@ -103,6 +113,7 @@ function apiWithAllUserMethods(dir) {
 }
 
 function apiWithDifferentUserField(dir) {
+  console.log("apiWithDifferentUserField");
   return api({
     kebab: 'user-field',
     userMethods: ['POST', 'PUT', 'DELETE'],
