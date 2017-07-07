@@ -22,7 +22,7 @@ export const create = ({ <%= storeUser ? 'user, ' : '' %><%- modelFields.length 
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   <%_ if (generateModel) { if (getList) { _%>
-  <%= pascal %>.count()
+  <%= pascal %>.count(query)
     .then(count => <%= pascal %>.find(query, select, cursor)
       <%_ if (storeUser) { _%>
       .populate('<%= userField %>')

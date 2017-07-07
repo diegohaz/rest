@@ -3,7 +3,7 @@ import { User } from '.'
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
 <%_ if (getList) { _%>
-  User.count()
+  User.count(query)
     .then(count => User.find(query, select, cursor)
       .then(users => ({
         rows: users.map((user) => user.view()),
