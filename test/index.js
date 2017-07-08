@@ -174,6 +174,13 @@ describe('generator-rest', function () {
     it('should install and pass tests', function () {});
   });
 
+  describe('install with password method and auth after user create', function () {
+    before(function (done) {
+      install({authMethods: ['password'], authOnUserCreate: true}, done);
+    });
+    it('should install and pass tests', function () {});
+  });
+
   describe('install with password reset option', function () {
     before(function (done) {
       install({

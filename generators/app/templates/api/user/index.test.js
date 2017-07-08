@@ -122,8 +122,15 @@ test('POST /users 201 (master)', async () => {
     .post(apiRoot)
     .send({ access_token: masterKey, email: 'd@d.com', password: '123456' })
   expect(status).toBe(201)
+  <%_ if (authOnUserCreate) { _%>
+  expect(typeof body).toBe('object')
+  expect(typeof body.user).toBe('object')
+  expect(typeof body.token).toBe('string')
+  expect(body.user.email).toBe('d@d.com')
+  <%_ } else { _%>
   expect(typeof body).toBe('object')
   expect(body.email).toBe('d@d.com')
+  <%_ } _%>
 })
 
 test('POST /users 201 (master)', async () => {
@@ -131,8 +138,15 @@ test('POST /users 201 (master)', async () => {
     .post(apiRoot)
     .send({ access_token: masterKey, email: 'd@d.com', password: '123456', role: 'user' })
   expect(status).toBe(201)
+  <%_ if (authOnUserCreate) { _%>
+  expect(typeof body).toBe('object')
+  expect(typeof body.user).toBe('object')
+  expect(typeof body.token).toBe('string')
+  expect(body.user.email).toBe('d@d.com')
+  <%_ } else { _%>
   expect(typeof body).toBe('object')
   expect(body.email).toBe('d@d.com')
+  <%_ } _%>
 })
 
 test('POST /users 201 (master)', async () => {
@@ -140,8 +154,15 @@ test('POST /users 201 (master)', async () => {
     .post(apiRoot)
     .send({ access_token: masterKey, email: 'd@d.com', password: '123456', role: 'admin' })
   expect(status).toBe(201)
+  <%_ if (authOnUserCreate) { _%>
+  expect(typeof body).toBe('object')
+  expect(typeof body.user).toBe('object')
+  expect(typeof body.token).toBe('string')
+  expect(body.user.email).toBe('d@d.com')
+  <%_ } else { _%>
   expect(typeof body).toBe('object')
   expect(body.email).toBe('d@d.com')
+  <%_ } _%>
 })
 
 test('POST /users 409 (master) - duplicated email', async () => {

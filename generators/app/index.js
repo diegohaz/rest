@@ -57,6 +57,14 @@ module.exports = yeoman.Base.extend({
       }
     }, {
       type: 'confirm',
+      name: 'authOnUserCreate',
+      message: 'Do you want to sign in user after create?',
+      default: false,
+      when: function (props) {
+        return props.generateAuthApi && props.authMethods.indexOf('password') !== -1;
+      }
+    }, {
+      type: 'confirm',
       name: 'passwordReset',
       message: 'Do you want to generate password reset API (it will need a SendGrid API Key)?',
       default: false,
@@ -81,6 +89,7 @@ module.exports = yeoman.Base.extend({
       }
     }]).then(function (props) {
       that.props = props;
+      that.props.authOnUserCreate = props.authOnUserCreate || false;
       that.props.slug = _.kebabCase(that.props.name);
       that.props.passwordSignup = props.authMethods && props.authMethods.indexOf('password') !== -1;
       that.props.authServices = props.authMethods && props.authMethods.filter(function (method) {
