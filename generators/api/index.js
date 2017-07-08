@@ -4,6 +4,7 @@ var yeoman = require('yeoman-generator');
 var pluralize = require('pluralize');
 var _ = require('lodash');
 var recast = require('recast');
+var reservedWords = require('reserved-words');
 
 module.exports = yeoman.Base.extend({
   prompting: function () {
@@ -30,6 +31,14 @@ module.exports = yeoman.Base.extend({
       name: 'kebab',
       message: 'What\'s the API name?',
       default: 'some-entity'
+    }, {
+      type: 'input',
+      name: 'lowerSuffix',
+      message: 'Name is a reserved word, add suffix for lowercase identifier',
+      default: 'Obj',
+      when: function (props) {
+        return reservedWords.check(_.lowerCase(props.kebab), 6);
+      }
     }, {
       type: 'input',
       name: 'kebabs',
@@ -150,6 +159,12 @@ module.exports = yeoman.Base.extend({
       this.props.lowers = _.lowerCase(this.props.camels);
       this.props.start = _.upperFirst(this.props.lower);
       this.props.starts = _.upperFirst(this.props.lowers);
+
+      // append suffix so we don't get reserved word clashes
+      if (this.props.lowerSuffix) {
+        this.props.camel = _.lowerCase(this.props.camel) + this.props.lowerSuffix;
+      }
+
       this.props.authMethods = authMethods;
       this.props.srcDir = srcDir;
       this.props.apiDir = apiDir;

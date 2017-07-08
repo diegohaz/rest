@@ -10,7 +10,7 @@ import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env } from '../../config'
 
-export default (routes) => {
+export default (apiRoot, routes) => {
   const app = express()
 
   <%_ if (https) { _%>
@@ -33,7 +33,7 @@ export default (routes) => {
 
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(bodyParser.json())
-  app.use(routes)
+  app.use(apiRoot, routes)
   app.use(queryErrorHandler())
   app.use(bodyErrorHandler())
 

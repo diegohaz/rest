@@ -38,6 +38,7 @@
     "pluralize": "^3.0.0",
     "rand-token": "^0.3.0",
     "recast": "^0.11.13",
+    "reserved-words": "^0.1.1",
     "yeoman-generator": "^0.24.1",
     "yosay": "^1.0.0"
   },
