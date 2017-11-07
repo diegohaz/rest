@@ -1,7 +1,7 @@
 <%_ if (authServices.length) { _%>
 import { stub } from 'sinon'
 <%_ } _%>
-import request from 'supertest-as-promised'
+import request from 'supertest'
 <%_ if (passwordSignup) { _%>
 import { masterKey, apiRoot } from '../../config'
 import { User } from '../user'

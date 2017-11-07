@@ -6,7 +6,7 @@ var hasAnotherSession = storeUser &&
   (userMethods.indexOf('PUT') >= 0 || userMethods.indexOf('DELETE') >= 0);
 _%>
 <%_ if (methods.length) { _%>
-import request from 'supertest-as-promised'
+import request from 'supertest'
 <%_ } _%>
 <%_ if (hasMaster) { _%>
 import { masterKey, apiRoot } from '../../config'

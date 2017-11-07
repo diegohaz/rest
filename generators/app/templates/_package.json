@@ -37,8 +37,7 @@
     "nodemon": "^1.10.2",
     "opn-cli": "^3.1.0",
     "sinon": "^4.0.1",
-    "supertest": "^3.0.0",
-    "supertest-as-promised": "^4.0.0"
+    "supertest": "^3.0.0"
   },
   "dependencies": {
     "babel-core": "^6.26.0",
