@@ -31,23 +31,16 @@ const config = {
     <%_ if (typeof sendgridKey !== 'undefined' && sendgridKey) { _%>
     sendgridKey: requireProcessEnv('SENDGRID_KEY'),
     <%_ } _%>
-    masterKey: requireProcessEnv('MASTER_KEY'),
     <%_ if (typeof generateAuthApi !== 'undefined' && generateAuthApi) { _%>
     jwtSecret: requireProcessEnv('JWT_SECRET'),
     <%_ } _%>
-    mongo: {
-      options: {
-        db: {
-          safe: true
-        }
-      }
-    }
+    masterKey: requireProcessEnv('MASTER_KEY')
   },
   test: {
     mongo: {
       uri: 'mongodb://localhost/<%= slug %>-test',
       options: {
-        debug: false
+        useMongoClient: true
       }
     }
   },
@@ -55,6 +48,7 @@ const config = {
     mongo: {
       uri: 'mongodb://localhost/<%= slug %>-dev',
       options: {
+        useMongoClient: true,
         debug: true
       }
     }
@@ -63,7 +57,10 @@ const config = {
     ip: process.env.IP || undefined,
     port: process.env.PORT || 8080,
     mongo: {
-      uri: process.env.MONGODB_URI || 'mongodb://localhost/<%= slug %>'
+      uri: process.env.MONGODB_URI || 'mongodb://localhost/<%= slug %>',
+      options: {
+        useMongoClient: true
+      }
     }
   }
 }
