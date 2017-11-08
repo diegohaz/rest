@@ -32,7 +32,7 @@
     "eslint-plugin-promise": "^3.0.0",
     "eslint-plugin-standard": "^3.0.1",
     "jest-cli": "^20.0.4",
-    "mockgoose": "^6.0.8",
+    "mockgoose": "^7.3.3",
     "nock": "^9.0.2",
     "nodemon": "^1.10.2",
     "opn-cli": "^3.1.0",
@@ -60,7 +60,7 @@
     <%_ if (generateAuthApi) { _%>
     "jsonwebtoken": "^8.1.0",
     <%_ } _%>
-    "mongoose": "^4.12.4",
+    "mongoose": "^4.13.0",
     "mongoose-create-unique": "^0.4.4",
     "mongoose-keywords": "^0.3.2",
     "morgan": "^1.7.0",

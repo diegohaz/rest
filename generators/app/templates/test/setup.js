@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import mockgoose from 'mockgoose'
+import { Mockgoose } from 'mockgoose'
 import mongoose from '../<%= srcDir %>/services/mongoose'
 import { mongo } from '../<%= srcDir %>/config'
 
@@ -22,8 +22,10 @@ global.TypeError = TypeError
 global.parseInt = parseInt
 global.parseFloat = parseFloat
 
+const mockgoose = new Mockgoose(mongoose)
+
 beforeAll(async () => {
-  await mockgoose(mongoose)
+  await mockgoose.prepareStorage()
   mongoose.connect(mongo.uri)
 })
 
