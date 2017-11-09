@@ -90,7 +90,7 @@ test('POST /auth 401 (master) - missing auth', async () => {
 <%_ authServices.forEach(function(service) { _%>
 
 test('POST /auth/<%= service %> 201', async () => {
-  stub(<%= service %>, 'getUser', () => Promise.resolve({
+  stub(<%= service %>, 'getUser').callsFake(() => Promise.resolve({
     service: '<%= service %>',
     id: '123',
     name: 'user',
