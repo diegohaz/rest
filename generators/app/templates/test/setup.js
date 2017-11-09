@@ -24,11 +24,15 @@ global.parseFloat = parseFloat
 
 beforeAll(async () => {
   await mockgoose(mongoose)
-  await mongoose.connect(mongo.uri, mongo.options)
+  try {
+    await mongoose.connect(mongo.uri, mongo.options)
+  } catch (e) {
+    // ¯\_(ツ)_/¯
+  }
 })
 
 afterAll(() => {
-  await mongoose.disconnect()
+  mongoose.disconnect()
 })
 
 afterEach(async () => {
