@@ -74,7 +74,7 @@
     <%_ } _%>
     "querymen": "^2.1.3",
     <%_ if (generateAuthApi) { _%>
-    "rand-token": "^0.3.0",
+    "rand-token": "^0.4.0",
     <%_ } _%>
     "request": "^2.83.0",
     "request-promise": "^4.2.2"
