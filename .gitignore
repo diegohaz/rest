@@ -4,4 +4,4 @@ coverage
 *.sublime-project
 *.sublime-workspace
 package-lock.json
-npm-debug.log
+*.log
