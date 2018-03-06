@@ -44,8 +44,6 @@ After you generate your project, these commands are available in `package.json`.
 
 ```bash
 npm test # test using Jest
-npm run test:unit # run unit tests
-npm run test:integration # run integration tests
 npm run coverage # test and open the coverage report in the browser
 npm run lint # lint using ESLint
 npm run dev # run the API in development mode

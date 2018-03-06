@@ -6,8 +6,6 @@
   "scripts": {
     "start": "node .",
     "test": "jest",
-    "test:unit": "npm test \"<%= srcDir %>/**/!(index).test.js\"",
-    "test:integration": "npm test \"<%= srcDir %>/**/index.test.js\"",
     "coverage": "npm test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
     "dev": "nodemon -i \"*.test.js\" .",
