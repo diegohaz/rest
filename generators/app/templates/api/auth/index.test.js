@@ -1,7 +1,7 @@
 <%_ if (authServices.length) { _%>
 import { stub } from 'sinon'
 <%_ } _%>
-import request from 'supertest-as-promised'
+import request from 'supertest'
 <%_ if (passwordSignup) { _%>
 import { masterKey, apiRoot } from '../../config'
 import { User } from '../user'
@@ -90,7 +90,7 @@ test('POST /auth 401 (master) - missing auth', async () => {
 <%_ authServices.forEach(function(service) { _%>
 
 test('POST /auth/<%= service %> 201', async () => {
-  stub(<%= service %>, 'getUser', () => Promise.resolve({
+  stub(<%= service %>, 'getUser').value(() => Promise.resolve({
     service: '<%= service %>',
     id: '123',
     name: 'user',

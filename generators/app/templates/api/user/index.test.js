@@ -1,4 +1,4 @@
-import request from 'supertest-as-promised'
+import request from 'supertest'
 import { masterKey, apiRoot } from '../../config'
 import { signSync } from '../../services/jwt'
 import express from '../../services/express'

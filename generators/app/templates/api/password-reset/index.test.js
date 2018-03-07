@@ -1,4 +1,4 @@
-import request from 'supertest-as-promised'
+import request from 'supertest'
 import nock from 'nock'
 import express from '../../services/express'
 import { masterKey, apiRoot } from '../../config'

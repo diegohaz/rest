@@ -114,7 +114,7 @@ module.exports = yeoman.Base.extend({
     }, {
       type: 'input',
       name: 'modelFields',
-      message: 'Which fields the model will have? (comma separated)',
+      message: 'Which fields the model will have? (comma separated, do not include id)',
       when: function (props) {
         return props.generateModel;
       }
