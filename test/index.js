@@ -1,21 +1,21 @@
-'use strict';
-var Promise = require('bluebird');
-var path = require('path');
-var fs = require('fs-extra');
-var spawnCommand = require('yeoman-generator/lib/actions/spawn_command').spawnCommand;
-var helpers = require('yeoman-test');
+const path = require('path');
+const fs = require('fs-extra');
+const spawnCommand = require('yeoman-generator/lib/actions/spawn-command').spawnCommand;
+const helpers = require('yeoman-test');
+const chalk = require('chalk');
 
-var authServices = ['facebook', 'github', 'google'];
+const authServices = ['facebook', 'github', 'google'];
 
 function install(answers, done, generateApis) {
   return helpers.run(path.join(__dirname, '../generators/app'))
     .withPrompts(answers)
     .toPromise()
     .then(function (dir) {
-      var promise = Promise.resolve(dir);
+
+      let promise = Promise.resolve(dir);
 
       if (generateApis) {
-        console.log('Generating APIs...');
+        chalk.cyan('Generating APIs...');
         promise = defaultApi(dir).then(function (dir) {
           return apiWithDifferentEndpointName(dir);
         }).then(function (dir) {
@@ -44,7 +44,7 @@ function install(answers, done, generateApis) {
       }
 
       promise.then(function (dir) {
-        console.log('Copying node_modules folder...');
+        chalk.cyan('Copying node_modules folder...');
         fs.ensureSymlinkSync(path.join(__dirname, '../node_modules'), path.join(dir, 'node_modules'));
         spawnCommand('npm', ['run', 'lint']).on('exit', function (err) {
           if (err) {
@@ -57,8 +57,8 @@ function install(answers, done, generateApis) {
           }
         });
       }).catch(function (err) {
-        console.log(err);
-        console.log(err.stack);
+        chalk.cyan(err);
+        chalk.cyan(err.stack);
         done(err);
       });
     });
@@ -78,7 +78,7 @@ function apiWithDifferentEndpointName(dir) {
 }
 
 function apiWithNoMethods(dir) {
-  console.log('apiWithNoMethods');
+  chalk.cyan('apiWithNoMethods');
   return api({
     kebab: 'no-method',
     methods: []
@@ -113,7 +113,7 @@ function apiWithAllUserMethods(dir) {
 }
 
 function apiWithDifferentUserField(dir) {
-  console.log('apiWithDifferentUserField');
+  chalk.cyan('apiWithDifferentUserField');
   return api({
     kebab: 'user-field',
     userMethods: ['POST', 'PUT', 'DELETE'],

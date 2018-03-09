@@ -1,13 +1,13 @@
-'use strict';
-var yeoman = require('yeoman-generator');
-var chalk = require('chalk');
-var yosay = require('yosay');
-var randtoken = require('rand-token');
-var _ = require('lodash');
+const generator = require('yeoman-generator');
+const chalk = require('chalk');
+const yosay = require('yosay');
+const randtoken = require('rand-token');
+const { startCase, kebabCase } = require('lodash');
 
-module.exports = yeoman.Base.extend({
-  prompting: function () {
-    var that = this;
+module.exports = class extends generator {  
+  prompting () {
+    const that = this;
+    
     // Have Yeoman greet the user.
     this.log(yosay(
       'Welcome to the slick ' + chalk.red('generator-rest') + ' generator!'
@@ -17,30 +17,35 @@ module.exports = yeoman.Base.extend({
       type: 'input',
       name: 'name',
       message: 'What\'s the project name?',
-      default: _.startCase(this.appname)
-    }, {
+      default: startCase(this.appname)
+    },
+    {
       type: 'input',
       name: 'srcDir',
       message: 'Where to put the source code?',
       default: that.config.get('srcDir') || 'src'
-    }, {
+    },
+    {
       type: 'input',
       name: 'apiDir',
-      message: function (props) {
+      message (props) {
         return 'Where to put the API code (inside ./' + props.srcDir + ')?';
       },
       default: that.config.get('apiDir') || 'api'
-    }, {
+    },
+    {
       type: 'confirm',
       name: 'https',
       message: 'Do you want to force SSL in production mode?',
       default: false
-    }, {
+    },
+    {
       type: 'confirm',
       name: 'generateAuthApi',
       message: 'Do you want to generate authentication API?',
       default: true
-    }, {
+    },
+    {
       type: 'checkbox',
       name: 'authMethods',
       message: 'Which types of authentication do you want to enable?',
@@ -50,12 +55,16 @@ module.exports = yeoman.Base.extend({
         'facebook',
         'github',
         'google',
-        {name: 'twitter', disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/8)'}
+        {
+          name: 'twitter',
+          disabled: 'Soon - PRs are welcome (see: https://github.com/diegohaz/generator-rest/issues/8)'
+        }
       ],
-      when: function (props) {
+      when (props) {
         return props.generateAuthApi;
       }
-    }, {
+    },
+    {
       type: 'confirm',
       name: 'authOnUserCreate',
       message: 'Do you want to sign in user after create?',
@@ -63,7 +72,8 @@ module.exports = yeoman.Base.extend({
       when: function (props) {
         return props.generateAuthApi && props.authMethods.indexOf('password') !== -1;
       }
-    }, {
+    },
+    {
       type: 'confirm',
       name: 'passwordReset',
       message: 'Do you want to generate password reset API (it will need a SendGrid API Key)?',
@@ -71,7 +81,8 @@ module.exports = yeoman.Base.extend({
       when: function (props) {
         return props.generateAuthApi && props.authMethods.indexOf('password') !== -1;
       }
-    }, {
+    },
+    {
       type: 'input',
       name: 'sendgridKey',
       message: 'What\'s your SendGrid API Key (you can skip this and update the .env file later)?',
@@ -79,7 +90,8 @@ module.exports = yeoman.Base.extend({
       when: function (props) {
         return props.passwordReset;
       }
-    }, {
+    },
+    {
       type: 'confirm',
       name: 'getList',
       message: 'Do you want the retrieve methods from users (GET) to have the form { rows, count } ?',
@@ -87,12 +99,13 @@ module.exports = yeoman.Base.extend({
       when: function (props) {
         return props.authMethods;
       }
-    }]).then(function (props) {
+    }])
+    .then((props) => {
       that.props = props;
-      that.props.authOnUserCreate = props.authOnUserCreate || false;
-      that.props.slug = _.kebabCase(that.props.name);
+      that.props.authOnUserCreate = props.authOnUserCreate || false;
+      that.props.slug = kebabCase(that.props.name);
       that.props.passwordSignup = props.authMethods && props.authMethods.indexOf('password') !== -1;
-      that.props.authServices = props.authMethods && props.authMethods.filter(function (method) {
+      that.props.authServices = props.authMethods && props.authMethods.filter((method) => {
         return method !== 'password';
       });
       that.props.masterKey = randtoken.uid(32);
@@ -105,14 +118,14 @@ module.exports = yeoman.Base.extend({
         authMethods: props.authMethods || []
       });
     });
-  },
+  }
 
-  writing: function () {
-    var props = this.props;
-    var copy = this.fs.copy.bind(this.fs);
-    var copyTpl = this.fs.copyTpl.bind(this.fs);
-    var tPath = this.templatePath.bind(this);
-    var dPath = this.destinationPath.bind(this);
+  writing() {
+    const props = this.props;
+    const copy = this.fs.copy.bind(this.fs);
+    const copyTpl = this.fs.copyTpl.bind(this.fs);
+    const tPath = this.templatePath.bind(this);
+    const dPath = this.destinationPath.bind(this);
 
     copy(tPath('editorconfig'), dPath('.editorconfig'));
     copy(tPath('eslintrc'), dPath('.eslintrc'));
@@ -147,15 +160,15 @@ module.exports = yeoman.Base.extend({
         tPath('api/password-reset'),
         dPath(props.srcDir + '/' + props.apiDir + '/password-reset'),
         props
-      );
+        );
     }
 
     if (props.sendgridKey) {
       copyTpl(tPath('services/sendgrid'), dPath(props.srcDir + '/services/sendgrid'), props);
     }
-  },
-
-  install: function () {
-    this.installDependencies({bower: false});
   }
-});
+
+  install () {
+    this.installDependencies({ bower: false });
+  }
+};
