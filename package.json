@@ -110,7 +110,6 @@
     "test": "gulp",
     "patch": "npm version patch && npm publish",
     "minor": "npm version minor && npm publish",
-    "major": "npm version major && npm publish",
     "postpublish": "git push origin master --follow-tags"
   },
   "license": "MIT"
