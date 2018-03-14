@@ -1,10 +1,10 @@
-const generator = require('yeoman-generator');
+const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
 const randtoken = require('rand-token');
 const { startCase, kebabCase } = require('lodash');
 
-module.exports = class extends generator {  
+module.exports = class extends Generator {  
   prompting () {
     const that = this;
     
@@ -100,12 +100,12 @@ module.exports = class extends generator {
         return props.authMethods;
       }
     }])
-    .then((props) => {
+    .then(props => {
       that.props = props;
       that.props.authOnUserCreate = props.authOnUserCreate || false;
       that.props.slug = kebabCase(that.props.name);
       that.props.passwordSignup = props.authMethods && props.authMethods.indexOf('password') !== -1;
-      that.props.authServices = props.authMethods && props.authMethods.filter((method) => {
+      that.props.authServices = props.authMethods && props.authMethods.filter(method => {
         return method !== 'password';
       });
       that.props.masterKey = randtoken.uid(32);
@@ -156,11 +156,7 @@ module.exports = class extends generator {
     }
 
     if (props.passwordReset && props.sendgridKey) {
-      copyTpl(
-        tPath('api/password-reset'),
-        dPath(props.srcDir + '/' + props.apiDir + '/password-reset'),
-        props
-        );
+      copyTpl(tPath('api/password-reset'), dPath(props.srcDir + '/' + props.apiDir + '/password-reset'), props);
     }
 
     if (props.sendgridKey) {

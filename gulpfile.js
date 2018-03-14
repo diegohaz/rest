@@ -16,7 +16,7 @@ gulp.task('lint', () => {
   .pipe(eslint.failAfterError());
 });
 
-gulp.task('nsp', (cb) => {
+gulp.task('nsp', cb => {
   nsp({package: path.resolve('package.json')}, cb);
 });
 
@@ -29,13 +29,13 @@ gulp.task('pre-test',() => {
   .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['pre-test'], (cb) => {
+gulp.task('test', ['pre-test'], cb => {
   let mochaErr;
 
   gulp.src('test/**/*.js')
   .pipe(plumber())
   .pipe(mocha({reporter: 'spec', timeout: 600000}))
-  .on('error', (err) => {
+  .on('error', err => {
     mochaErr = err;
   })
   .pipe(istanbul.writeReports())

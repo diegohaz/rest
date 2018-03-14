@@ -1,11 +1,11 @@
 const path = require('path');
-const generator = require('yeoman-generator');
+const Generator = require('yeoman-generator');
 const pluralize = require('pluralize');
 const { camelCase, findLastIndex, findIndex, upperFirst, lowerCase } = require('lodash');
 const recast = require('recast');
 const reservedWords = require('reserved-words');
 
-module.exports = class extends generator {
+module.exports = class extends Generator {
 
   prompting () {
     const srcDir = this.config.get('srcDir') || 'src';
@@ -20,8 +20,8 @@ module.exports = class extends generator {
       { name: 'Delete (DELETE)', value: 'DELETE' }
     ];
 
-    const getSelectedMethods = (props) => {
-      return methods.filter((method) => {
+    const getSelectedMethods = props => {
+      return methods.filter(method => {
         return props.methods.indexOf(method.value) !== -1;
       });
     };
@@ -59,10 +59,10 @@ module.exports = class extends generator {
       type: 'checkbox',
       name: 'methods',
       message: 'Which methods it will have?',
-      default: methods.map((method) => {
+      default: methods.map(method => {
         return method.value;
       }),
-      choices: methods.map((method) => {
+      choices: methods.map(method => {
         return Object.assign({}, method, {checked: true});
       })
     },
@@ -83,7 +83,7 @@ module.exports = class extends generator {
       default: [],
       choices (props) {
         const choices = getSelectedMethods(props);
-        return choices.map((choice) => {
+        return choices.map(choice => {
           if (props.masterMethods.indexOf(choice.value) !== -1) {
             return Object.assign({}, choice, {disabled: 'Accessible only with master key'});
           }
@@ -103,7 +103,7 @@ module.exports = class extends generator {
 
         const choices = getSelectedMethods(props);
         
-        return choices.map((choice) => {
+        return choices.map(choice => {
 
           if (props.masterMethods.indexOf(choice.value) !== -1) {
             return Object.assign({}, choice, {disabled: 'Accessible only with master key'});
@@ -162,22 +162,22 @@ module.exports = class extends generator {
       when (props) {
         const methods = getSelectedMethods(props);
         
-        return methods.find((method) => {
+        return methods.find(method => {
           return method.value === 'GET LIST';
         }) && props.generateModel;
       }
     }];
 
-    return this.prompt(prompts).then((props) => {
+    return this.prompt(prompts).then(props => {
       this.props = props;
-      this.props.camel   = camelCase(this.props.kebab);
-      this.props.camels  = pluralize(this.props.camel);
-      this.props.pascal  = upperFirst(this.props.camel);
+      this.props.camel = camelCase(this.props.kebab);
+      this.props.camels = pluralize(this.props.camel);
+      this.props.pascal = upperFirst(this.props.camel);
       this.props.pascals = upperFirst(this.props.camels);
-      this.props.lower   = lowerCase(this.props.camel);
-      this.props.lowers  = lowerCase(this.props.camels);
-      this.props.start   = upperFirst(this.props.lower);
-      this.props.starts  = upperFirst(this.props.lowers);
+      this.props.lower = lowerCase(this.props.camel);
+      this.props.lowers = lowerCase(this.props.camels);
+      this.props.start = upperFirst(this.props.lower);
+      this.props.starts = upperFirst(this.props.lowers);
 
       // append suffix so we don't get reserved word clashes
       if (this.props.lowerSuffix) {
@@ -190,10 +190,7 @@ module.exports = class extends generator {
 
       this.props.modelFields = this.props.modelFields || '';
       this.props.modelFields = this.props.modelFields ?
-      this.props.modelFields.split(',').map((field) => {
-        return field.trim();
-      }) : [];
-
+      this.props.modelFields.split(',').map(field => field.trim()) : [];
       this.props.getList = props.getList || false;
       this.props.storeUser = this.props.storeUser || false;
 
@@ -209,9 +206,7 @@ module.exports = class extends generator {
     const copyTpl = this.fs.copyTpl.bind(this.fs);
     const tPath = this.templatePath.bind(this);
     const dPath = this.destinationPath.bind(this);
-    const filepath = (filename) => {
-      return path.join(props.dir, props.kebab, filename);
-    };
+    const filepath = filename => path.join(props.dir, props.kebab, filename);
 
     copyTpl(tPath('controller.js'), dPath(filepath('controller.js')), props);
     copyTpl(tPath('index.js'), dPath(filepath('index.js')), props);
@@ -226,7 +221,7 @@ module.exports = class extends generator {
 
       const ast = recast.parse(this.fs.read(routesFile));
       const body = ast.program.body;
-      const lastImportIndex = findLastIndex(body, (statement) => {
+      const lastImportIndex = findLastIndex(body, statement => {
         return statement.type === 'ImportDeclaration';
       });
       const actualImportCode = recast.print(body[lastImportIndex]).code;

@@ -7,6 +7,8 @@
   },
   "rules": {
     "no-var": "error",
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "arrow-parens": ["error", "as-needed"],
+    "quotes": ["error", "single"]
   }
 }
