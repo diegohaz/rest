@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import path from 'path'
+import merge from 'lodash/merge'
 
 /* istanbul ignore next */
 const requireProcessEnv = (name) => {
@@ -68,5 +69,5 @@ const config = {
   }
 }
 
-module.exports = Object.assign(config.all, config[config.all.env])
+module.exports = merge(config.all, config[config.all.env])
 export default module.exports
