@@ -22,14 +22,14 @@
     "apidoc": "^0.17.6",
     "apidoc-markdown": "^0.2.0",
     "babel-eslint": "^8.0.1",
-    "babel-jest": "^20.0.3",
+    "babel-jest": "^22.4.1",
     "cross-env": "^5.0.5",
-    "dotenv-safe": "^4.0.3",
+    "dotenv-safe": "^5.0.1",
     "eslint": "^4.4.1",
-    "eslint-config-standard": "^10.2.1",
+    "eslint-config-standard": "^11.0.0",
     "eslint-plugin-promise": "^3.0.0",
     "eslint-plugin-standard": "^3.0.1",
-    "jest-cli": "^20.0.4",
+    "jest-cli": "^22.4.3",
     "mockgoose": "^6.0.8",
     "nock": "^9.0.2",
     "nodemon": "^1.10.2",
@@ -58,7 +58,7 @@
     <%_ if (generateAuthApi) { _%>
     "jsonwebtoken": "^8.1.0",
     <%_ } _%>
-    "mongoose": "^4.12.4",
+    "mongoose": "^4.13.12",
     "mongoose-create-unique": "^0.4.4",
     "mongoose-keywords": "^0.3.2",
     "morgan": "^1.7.0",
@@ -74,8 +74,7 @@
     <%_ if (generateAuthApi) { _%>
     "rand-token": "^0.4.0",
     <%_ } _%>
-    "request": "^2.83.0",
-    "request-promise": "^4.2.2"
+    "request": "^2.83.0"
     <%_ if (typeof sendgridKey !== 'undefined' && sendgridKey) { _%>,
     "sendgrid": "^4.0.2"
     <%_ } _%>
