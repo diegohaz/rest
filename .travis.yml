@@ -3,9 +3,8 @@ cache:
   directories:
     - node_modules
 node_js:
-- v4
-- v5
-- v6
+- v8
+- v9
 addons:
   apt:
     sources:
