@@ -74,7 +74,7 @@
     "gulp-istanbul": "^1.0.0",
     "gulp-line-ending-corrector": "^1.0.1",
     "gulp-mocha": "^2.0.0",
-    "gulp-nsp": "^2.1.0",
+    "gulp-nsp": "^3.0.1",
     "gulp-plumber": "^1.0.0",
     "jest-cli": "^20.0.4",
     "jsonwebtoken": "^8.1.0",
