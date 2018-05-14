@@ -3,6 +3,8 @@ cache:
   directories:
     - node_modules
 node_js:
+- v6
+- v7
 - v8
 - v9
 addons:
