@@ -44,14 +44,7 @@ const config = {
       }
     }
   },
-  test: {
-    mongo: {
-      uri: 'mongodb://localhost/<%= slug %>-test',
-      options: {
-        debug: false
-      }
-    }
-  },
+  test: { },
   development: {
     mongo: {
       uri: 'mongodb://localhost/<%= slug %>-dev',
