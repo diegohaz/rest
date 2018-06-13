@@ -52,7 +52,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
     "babel-runtime": "^6.26.0",
-    "bcrypt": "^1.0.2",
+    "bcrypt": "^2.0.1",
     "body-parser": "^1.18.2",
     "bodymen": "^1.0.3",
     "compression": "^1.7.1",
