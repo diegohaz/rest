@@ -1,4 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
+<%_ if (sockets) { _%>
+import { registerEvents } from './events'
+<%_ } _%>
 
 <%_ if (modelFields.length || storeUser) { _%>
 const <%= camel %>Schema = new Schema({
@@ -48,7 +51,9 @@ const <%= camel %>Schema = new Schema({}, { timestamps: true })
     } : view
   }
 }
-
+<%_ if (sockets) { _%>
+registerEvents(<%= camel %>Schema)
+<%_ } _%>
 const model = mongoose.model('<%= pascal %>', <%= camel %>Schema)
 
 export const schema = model.schema

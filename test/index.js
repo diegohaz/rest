@@ -40,6 +40,16 @@ function install(answers, done, generateApis) {
           return apiWithUserModelField(dir);
         }).then(function (dir) {
           return apiWithCountAndRowsGetList(dir);
+        }).then(function (dir) {
+          if (answers.sockets) {
+            return apiWithSockets(dir);
+          }
+          return dir
+        }).then(function (dir) {
+          if (answers.sockets) {
+            return anotherWithSockets(dir);
+          }
+          return dir
         });
       }
 
@@ -78,7 +88,6 @@ function apiWithDifferentEndpointName(dir) {
 }
 
 function apiWithNoMethods(dir) {
-  console.log('apiWithNoMethods');
   return api({
     kebab: 'no-method',
     methods: []
@@ -113,7 +122,6 @@ function apiWithAllUserMethods(dir) {
 }
 
 function apiWithDifferentUserField(dir) {
-  console.log('apiWithDifferentUserField');
   return api({
     kebab: 'user-field',
     userMethods: ['POST', 'PUT', 'DELETE'],
@@ -154,6 +162,20 @@ function apiWithCountAndRowsGetList(dir) {
   return api({
     kebab: 'count-and-rows-get-list',
     getList: true
+  }, dir);
+}
+
+function apiWithSockets(dir) {
+  return api({
+    kebab: 'with-sockets',
+    sockets: true
+  }, dir);
+}
+
+function anotherWithSockets(dir) {
+  return api({
+    kebab: 'another-with-sockets',
+    sockets: true
   }, dir);
 }
 
@@ -224,6 +246,20 @@ describe('generator-rest', function () {
   describe('install with { rows, count } API', function () {
     before(function (done) {
       install({getList: true}, done, true);
+    });
+    it('should install and pass tests', function () {});
+  });
+
+  describe('install with sockets', function () {
+    before(function (done) {
+      install({sockets: true}, done, true);
+    });
+    it('should install and pass tests', function () {});
+  });
+
+  describe('install with sockets on users', function () {
+    before(function (done) {
+      install({authMethods: ['password'], sockets: true, socketsOnUser: true}, done, true);
     });
     it('should install and pass tests', function () {});
   });

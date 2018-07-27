@@ -11,6 +11,7 @@ module.exports = yeoman.Base.extend({
     var srcDir = this.config.get('srcDir') || 'src';
     var apiDir = this.config.get('apiDir') || 'api';
     var authMethods = this.config.get('authMethods') || [];
+    var sockets = this.config.get('sockets') || false;
 
     var methods = [
       {name: 'Create (POST)', value: 'POST'},
@@ -147,10 +148,19 @@ module.exports = yeoman.Base.extend({
           return method.value === 'GET LIST';
         }) && props.generateModel;
       }
+    }, {
+      type: 'confirm',
+      name: 'sockets',
+      message: 'Do you want to configure sockets on the model ?',
+      default: false,
+      when: function (props) {
+        return sockets && props.generateModel
+      }
     }];
 
     return this.prompt(prompts).then(function (props) {
       this.props = props;
+      this.props.sockets = props.sockets || false;
       this.props.camel = _.camelCase(this.props.kebab);
       this.props.camels = pluralize(this.props.camel);
       this.props.pascal = _.upperFirst(this.props.camel);
@@ -187,6 +197,7 @@ module.exports = yeoman.Base.extend({
   writing: function () {
     var props = this.props;
     var routesFile = path.join(props.dir, 'index.js');
+    var socketsFile = path.join(this.config.get('srcDir') || 'src', 'services/websockets/index.js');
     var copyTpl = this.fs.copyTpl.bind(this.fs);
     var tPath = this.templatePath.bind(this);
     var dPath = this.destinationPath.bind(this);
@@ -203,6 +214,11 @@ module.exports = yeoman.Base.extend({
       copyTpl(tPath('model.test.js'), dPath(filepath('model.test.js')), props);
     }
 
+    if (props.sockets) {
+      copyTpl(tPath('socket.js'), dPath(filepath('socket.js')), props);
+      copyTpl(tPath('events.js'), dPath(filepath('events.js')), props);
+    }
+
     if (this.fs.exists(routesFile)) {
       var ast = recast.parse(this.fs.read(routesFile));
       var body = ast.program.body;
@@ -210,7 +226,8 @@ module.exports = yeoman.Base.extend({
         return statement.type === 'ImportDeclaration';
       });
       var actualImportCode = recast.print(body[lastImportIndex]).code;
-      var importString = ['import ', props.camel, ' from \'./', props.kebab, '\''].join('');
+      var importString = `import ${props.camel} from './${props.kebab}'`;
+
       body.splice(lastImportIndex, 1, importString);
       body.splice(lastImportIndex, 0, actualImportCode);
 
@@ -237,6 +254,33 @@ module.exports = yeoman.Base.extend({
       }
 
       this.fs.write(routesFile, recast.print(ast).code);
+    }
+
+    if (props.sockets && this.fs.exists(socketsFile)) {
+      var astWebSockets = recast.parse(this.fs.read(socketsFile));
+      var bodyWebSockets = astWebSockets.program.body;
+      var lastImportIndexWebSockets = _.findLastIndex(bodyWebSockets, function (statement) {
+        return statement.type === 'ImportDeclaration';
+      });
+      var actualImportCodeWebSockets = recast.print(bodyWebSockets[lastImportIndexWebSockets]).code;
+      var registerFunction = `${props.pascal}WebSocket`
+      var importStringWebSockets = `import { register as ${registerFunction} } from '../../api/${props.kebab}/socket'`;
+
+      bodyWebSockets.splice(lastImportIndexWebSockets, 1, importStringWebSockets);
+      bodyWebSockets.splice(lastImportIndexWebSockets, 0, actualImportCodeWebSockets);
+
+      var registerFunctionsIdx = _.findLastIndex(bodyWebSockets, function (statement) {
+        return statement.type === 'VariableDeclaration' && _.get(statement, 'declarations[0].id.name', '') === 'registerFunctions' && statement.declarations.length === 1
+      });
+
+      if (registerFunctionsIdx === -1) {
+        bodyWebSockets.splice(lastImportIndexWebSockets, 0, `const registerFunctions = [${registerFunction}]`);
+      } else {
+        var b = recast.types.builders;
+        bodyWebSockets[registerFunctionsIdx].declarations[0].init.elements.push(b.identifier(registerFunction))
+      }
+
+      this.fs.write(socketsFile, recast.print(astWebSockets).code);
     }
   },
 
