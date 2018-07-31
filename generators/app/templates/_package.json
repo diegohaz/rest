@@ -79,7 +79,7 @@
     "request": "^2.83.0",
     "request-promise": "^4.2.2"
     <%_ if (typeof sendgridKey !== 'undefined' && sendgridKey) { _%>,
-    "sendgrid": "^4.0.2"
+    "@sendgrid/mail": "^6.3.1"
     <%_ } _%>
   }
 }

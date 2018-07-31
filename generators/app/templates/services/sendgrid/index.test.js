@@ -8,10 +8,10 @@ it('sends mail', async () => {
     .reply(202)
 
   const response = await sendgrid.sendMail({
-    toMail: 'test',
+    toEmail: 'test',
     subject: 'Test',
     content: '<h1>Just Testing</h1>'
   })
 
-  expect(response.statusCode).toBe(202)
+  expect(response[0].statusCode).toBe(202)
 })
