@@ -78,7 +78,7 @@ function apiWithDifferentEndpointName(dir) {
 }
 
 function apiWithNoMethods(dir) {
-  console.log("apiWithNoMethods");
+  console.log('apiWithNoMethods');
   return api({
     kebab: 'no-method',
     methods: []
@@ -113,7 +113,7 @@ function apiWithAllUserMethods(dir) {
 }
 
 function apiWithDifferentUserField(dir) {
-  console.log("apiWithDifferentUserField");
+  console.log('apiWithDifferentUserField');
   return api({
     kebab: 'user-field',
     userMethods: ['POST', 'PUT', 'DELETE'],

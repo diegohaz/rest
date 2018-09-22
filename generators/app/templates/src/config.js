@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import path from 'path'
+import merge from 'lodash/merge'
 
 /* istanbul ignore next */
 const requireProcessEnv = (name) => {
@@ -24,7 +25,7 @@ const config = {
     root: path.join(__dirname, '..'),
     port: process.env.PORT || 9000,
     ip: process.env.IP || '0.0.0.0',
-    apiRoot: process.env.API_ROOT || '/api',
+    apiRoot: process.env.API_ROOT || '',
     <%_ if (typeof passwordReset !== 'undefined' && passwordReset) { _%>
     defaultEmail: 'no-reply@<%= slug %>.com',
     <%_ } _%>
@@ -43,14 +44,7 @@ const config = {
       }
     }
   },
-  test: {
-    mongo: {
-      uri: 'mongodb://localhost/<%= slug %>-test',
-      options: {
-        debug: false
-      }
-    }
-  },
+  test: { },
   development: {
     mongo: {
       uri: 'mongodb://localhost/<%= slug %>-dev',
@@ -68,5 +62,5 @@ const config = {
   }
 }
 
-module.exports = Object.assign(config.all, config[config.all.env])
+module.exports = merge(config.all, config[config.all.env])
 export default module.exports
