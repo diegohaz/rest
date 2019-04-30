@@ -1,5 +1,5 @@
 # rest [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage percentage][coveralls-image]][coveralls-url]
-> RESTful API generator using NodeJS, Express, WebSockets and Mongoose
+> RESTful API generator using NodeJS, Express, WebSockets and Mongoose. Forked from [rest](https://github.com/diegohaz/rest)
 
 📹 [Watch this video](https://www.youtube.com/watch?v=6x-ijyG-ack) for an overview on how to use **generator-rest** and deploy your project to [Heroku](https://heroku.com).
 
@@ -36,7 +36,7 @@ First, install [Yeoman](http://yeoman.io) and generator-rest using [npm](https:/
 
 ```bash
 npm install -g yo
-npm install -g generator-rest
+npm install -g generator-rest-danmmx
 ```
 
 ## Generators
