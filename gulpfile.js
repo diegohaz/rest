@@ -30,10 +30,10 @@ gulp.task('pre-test', function () {
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['pre-test'], function (cb) {
+gulp.task('test', gulp.series('pre-test', function (cb) {
   var mochaErr;
 
-  gulp.src('test/**/*.js')
+  return gulp.src('test/**/*.js')
     .pipe(plumber())
     .pipe(mocha({reporter: 'spec', timeout: 600000}))
     .on('error', function (err) {
@@ -43,20 +43,21 @@ gulp.task('test', ['pre-test'], function (cb) {
     .on('end', function () {
       cb(mochaErr);
     });
-});
+}));
 
 gulp.task('watch', function () {
   gulp.watch(['generators/**/*.js', 'test/**'], ['test']);
 });
 
-gulp.task('coveralls', ['test'], function () {
+gulp.task('coveralls', gulp.series('test', function (cb) {
   if (!process.env.CI) {
-    return;
+    return cb();
   }
 
   return gulp.src(path.join(__dirname, 'coverage/lcov.info'))
-    .pipe(coveralls());
-});
+    .pipe(coveralls())
+    .on('end', cb);
+}));
 
-gulp.task('prepublish', [/* 'nsp' */]);
-gulp.task('default', ['test', 'coveralls']);
+gulp.task('prepublish', function(cb) { /* nsp? */ cb() });
+gulp.task('default', gulp.series('coveralls'));
