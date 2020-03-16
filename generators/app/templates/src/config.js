@@ -13,9 +13,9 @@ const requireProcessEnv = (name) => {
 /* istanbul ignore next */
 if (process.env.NODE_ENV !== 'production') {
   const dotenv = require('dotenv-safe')
-  dotenv.load({
+  dotenv.config({
     path: path.join(__dirname, '../.env'),
-    sample: path.join(__dirname, '../.env.example')
+    example: path.join(__dirname, '../.env.example')
   })
 }
 
@@ -38,9 +38,9 @@ const config = {
     <%_ } _%>
     mongo: {
       options: {
-        db: {
-          safe: true
-        }
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+        useCreateIndex: true
       }
     }
   },

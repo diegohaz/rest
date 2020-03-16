@@ -7,7 +7,9 @@ import api from './api'
 const app = express(apiRoot, api)
 const server = http.createServer(app)
 
-mongoose.connect(mongo.uri)
+if (mongo.uri) {
+  mongoose.connect(mongo.uri)
+}
 mongoose.Promise = Promise
 
 setImmediate(() => {

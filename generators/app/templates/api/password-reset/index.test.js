@@ -86,7 +86,7 @@ test('PUT /password-resets/:token 200', async () => {
   const { status, body } = await request(app())
     .put(`${apiRoot}/${passwordReset.token}`)
     .send({ password: '654321' })
-  const [ updatedUser, passwordResets ] = await Promise.all([
+  const [updatedUser, passwordResets] = await Promise.all([
     User.findById(passwordReset.user.id),
     PasswordReset.find({})
   ])

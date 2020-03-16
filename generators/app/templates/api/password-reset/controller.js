@@ -40,7 +40,7 @@ export const update = ({ params: { token }, bodymen: { body: { password } } }, r
       if (!reset) return null
       const { user } = reset
       return user.set({ password }).save()
-        .then(() => PasswordReset.remove({ user }))
+        .then(() => PasswordReset.deleteMany({ user }))
         .then(() => user.view(true))
     })
     .then(success(res))

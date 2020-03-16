@@ -83,7 +83,7 @@ userSchema.pre('save', function (next) {
 <%_ } _%>
 userSchema.methods = {
   view (full) {
-    let view = {}
+    const view = {}
     let fields = ['id', 'name', 'picture']
 
     if (full) {
@@ -99,6 +99,7 @@ userSchema.methods = {
     return bcrypt.compare(password, this.password).then((valid) => valid ? this : false)
   }
   <%_ } _%>
+
 }
 
 userSchema.statics = {
