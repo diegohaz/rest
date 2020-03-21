@@ -1,6 +1,6 @@
 {
   "name": "generator-rest",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "RESTful API generator using NodeJS, Express and MongoDB. Watch https://youtu.be/6x-ijyG-ack",
   "homepage": "https://github.com/diegohaz/generator-rest",
   "author": {
