@@ -27,6 +27,7 @@ Follow me on <a href="https://twitter.com/diegohaz">Twitter</a> and <a href="htt
  - **Unit and integration tests** - Using [Jest](https://github.com/facebook/jest)
  - **Continuous integration support** - Using [Travis CI](https://travis-ci.org/)
  - **API docs generator** - Using [apidoc](http://apidocjs.com/)
+ - **WebSockets** - Using [primus](https://github.com/primus/primus)
  - **Love ♥** - Using [me](https://github.com/diegohaz)
 
 ## Installation
@@ -137,6 +138,8 @@ HTTP/1.1 201 Created
 
 > Some endpoints are only accessible by admin users. To create an admin user, just pass the `role=admin` along to other data when calling `POST /users`.
 
+If you choose to generate the WebSockets set up you can connect directly to the server. You can see an example on [real-time-react](https://github.com/adamhepton/real-time-react).
+
 ## Deploy
 
 Here is an example on how to deploy to [Heroku](https://heroku.com) using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command-line):
@@ -213,6 +216,14 @@ It defines the Mongoose schema and model for the API endpoint. Any changes to th
 
 This is the API controller file. It defines the main router middlewares which use the API model.
 
+#### src/api/some-endpoint/events.js
+
+This is the events handler for the WebSockets. Binds a handler to the `post(event)` method on the model.
+
+#### src/api/some-endpoint/socket.js
+
+This is the WebSockets handler. Receives the events emitted by `some-endpoint/events.js` file and sends it to the spark.
+
 #### src/api/some-endpoint/index.js
 
 This is the entry file of the API. It defines the routes using, along other middlewares (like session, validation etc.), the middlewares defined in the `some-endpoint.controller.js` file.
@@ -226,7 +237,7 @@ Here you can put `helpers`, `libraries` and other types of modules which you wan
 - Support optional phone authentication
 - Support optional email confirmation process
 - Support Twitter and other social login methods
-- Socket.io support
+- WebSockets configuration tests (`events.test.js` and `socket.test.js`)
 
 PRs are welcome.
 
