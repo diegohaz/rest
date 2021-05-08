@@ -19,8 +19,8 @@
     "setupFilesAfterEnv": ["<rootDir>/test/setup.js"]
   },
   "devDependencies": {
-    "apidoc": "^0.20.0",
-    "apidoc-markdown": "^0.2.1",
+    "apidoc": "^0.27.0",
+    "apidoc-markdown": "^5.2.3",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.1.0",
     "cross-env": "^7.0.2",
