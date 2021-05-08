@@ -40,6 +40,16 @@ function install(answers, done, generateApis) {
           return apiWithUserModelField(dir);
         }).then(function (dir) {
           return apiWithCountAndRowsGetList(dir);
+        }).then(function (dir) {
+          if (answers.sockets) {
+            return apiWithSockets(dir);
+          }
+          return dir
+        }).then(function (dir) {
+          if (answers.sockets) {
+            return anotherWithSockets(dir);
+          }
+          return dir
         });
       }
 
@@ -157,6 +167,20 @@ function apiWithCountAndRowsGetList(dir) {
   }, dir);
 }
 
+function apiWithSockets(dir) {
+  return api({
+    kebab: 'with-sockets',
+    sockets: true
+  }, dir);
+}
+
+function anotherWithSockets(dir) {
+  return api({
+    kebab: 'another-with-sockets',
+    sockets: true
+  }, dir);
+}
+
 function api(answers, dir) {
   return helpers.run(path.join(__dirname, '../generators/api'))
     .inTmpDir(function (tmpDir) {
@@ -224,6 +248,20 @@ describe('generator-rest', function () {
   describe('install with { rows, count } API', function () {
     before(function (done) {
       install({getList: true}, done, true);
+    });
+    it('should install and pass tests', function () {});
+  });
+
+  describe('install with sockets', function () {
+    before(function (done) {
+      install({sockets: true}, done, true);
+    });
+    it('should install and pass tests', function () {});
+  });
+
+  describe('install with sockets on users', function () {
+    before(function (done) {
+      install({authMethods: ['password'], sockets: true, socketsOnUser: true}, done, true);
     });
     it('should install and pass tests', function () {});
   });

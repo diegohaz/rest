@@ -72,6 +72,10 @@
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.0",
     <%_ } _%>
+    <%_ if (sockets) { _%>
+    "primus": "^7.3.5",
+    "primus-emit": "^1.0.0",
+    <%_ } _%>
     "querymen": "^2.1.4",
     <%_ if (generateAuthApi) { _%>
     "rand-token": "^0.4.0",

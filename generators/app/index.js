@@ -87,9 +87,24 @@ module.exports = yeoman.Base.extend({
       when: function (props) {
         return props.authMethods;
       }
+    }, {
+      type: 'confirm',
+      name: 'sockets',
+      message: 'Do you want to include sockets on the server ?',
+      default: false
+    }, {
+      type: 'confirm',
+      name: 'socketsOnUser',
+      message: 'Do you want to include sockets on the users ?',
+      default: false,
+      when: function (props) {
+        return props.authMethods && props.sockets;
+      }
     }]).then(function (props) {
       that.props = props;
       that.props.authOnUserCreate = props.authOnUserCreate || false;
+      that.props.sockets = props.sockets || false;
+      that.props.socketsOnUser = props.socketsOnUser || false;
       that.props.slug = _.kebabCase(that.props.name);
       that.props.passwordSignup = props.authMethods && props.authMethods.indexOf('password') !== -1;
       that.props.authServices = props.authMethods && props.authMethods.filter(function (method) {
@@ -131,7 +146,16 @@ module.exports = yeoman.Base.extend({
     if (props.generateAuthApi) {
       copyTpl(tPath('services/passport'), dPath(props.srcDir + '/services/passport'), props);
       copyTpl(tPath('services/jwt'), dPath(props.srcDir + '/services/jwt'), props);
-      copyTpl(tPath('api/user'), dPath(props.srcDir + '/' + props.apiDir + '/user'), props);
+
+      if (props.socketsOnUser) {
+        copyTpl(tPath('api/user'), dPath(props.srcDir + '/' + props.apiDir + '/user'), props);
+      } else {
+        copyTpl(tPath('api/user/controller.js'), dPath(props.srcDir + '/' + props.apiDir + '/user/controller.js'), props);
+        copyTpl(tPath('api/user/index.js'), dPath(props.srcDir + '/' + props.apiDir + '/user/index.js'), props);
+        copyTpl(tPath('api/user/index.test.js'), dPath(props.srcDir + '/' + props.apiDir + '/user/index.test.js'), props);
+        copyTpl(tPath('api/user/model.js'), dPath(props.srcDir + '/' + props.apiDir + '/user/model.js'), props);
+        copyTpl(tPath('api/user/model.test.js'), dPath(props.srcDir + '/' + props.apiDir + '/user/model.test.js'), props);
+      }
 
       if (props.authMethods.length) {
         copyTpl(tPath('api/auth'), dPath(props.srcDir + '/' + props.apiDir + '/auth'), props);
@@ -140,6 +164,10 @@ module.exports = yeoman.Base.extend({
       props.authServices.forEach(function (service) {
         copyTpl(tPath('services/' + service), dPath(props.srcDir + '/services/' + service), props);
       });
+    }
+
+    if (props.sockets) {
+      copyTpl(tPath('services/websockets'), dPath(props.srcDir + '/services/websockets'), props);
     }
 
     if (props.passwordReset && props.sendgridKey) {

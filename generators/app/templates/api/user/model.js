@@ -10,6 +10,9 @@ import mongooseKeywords from 'mongoose-keywords'
 <%_ if (passwordSignup) { _%>
 import { env } from '../../config'
 <%_ } _%>
+<%_ if (socketsOnUser) { _%>
+import { registerEvents } from './events'
+<%_ } _%>
 
 const roles = ['user', 'admin']
 
@@ -125,7 +128,9 @@ userSchema.statics = {
   roles
   <%_ } _%>
 }
-
+<%_ if (socketsOnUser) { _%>
+registerEvents(userSchema)
+<%_ } _%>
 userSchema.plugin(mongooseKeywords, { paths: ['email', 'name'] })
 
 const model = mongoose.model('User', userSchema)
