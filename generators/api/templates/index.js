@@ -68,7 +68,7 @@ const { <%= modelFields.join(', ') %> } = schema.tree
  <%_ } _%>
  <%_ if ((method.method === 'POST' || method.method === 'PUT') && modelFields.length) { _%>
  <%_ modelFields.forEach(function (field) { _%>
- * @apiParam <%= field %> <%= start %>'s <%= field %>.
+ * @apiParam {String} <%= field %> <%= start %>'s <%= field %>.
  <%_ }) _%>
  <%_ } _%>
  <%_ if (method.method === 'GET LIST') { _%>
