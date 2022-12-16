@@ -45,11 +45,8 @@ import { <%= authMiddlewares.join(', ') %> } from '../../services/passport'
 <%_ if (methods.length) { _%>
 import { <%= methods.map(function (method) { return method.controller }).join(', ') %> } from './controller'
 <%_ } _%>
-<%_ if (generateModel) { _%>
 <%_ if (hasBody) { _%>
 import { schema } from './model'
-<%_ } _%>
-export <%= pascal %>, { schema } from './model'
 <%_ } _%>
 
 const router = new Router()
